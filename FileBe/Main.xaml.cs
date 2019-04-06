@@ -221,5 +221,42 @@ namespace FileBe
                 MessageBox.Show("Lỗi: " + ex.Message);
             }
         }
+
+        private void btnDelImg_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ShapeRange orSh = app.ActiveSelectionRange;
+                if (orSh.Count == 1)
+                    orSh.UngroupAll();
+                foreach(Corel.Interop.VGCore.Shape sh in orSh)
+                {
+                    if (sh.Type == cdrShapeType.cdrBitmapShape)
+                        sh.Delete();
+                    //MessageBox.Show(sh.Type.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
+        }
+
+        private void btnCalSizeInsert_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+                ShapeRange orSh = app.ActiveSelectionRange;
+                double sRec = orSh.SizeHeight * orSh.SizeWidth;
+                double sEll = Math.Pow(orSh.SizeWidth / 2,2) * Math.PI;
+                double d = Math.Sqrt(((sRec - sEll) / 1.5775796) / Math.PI) * 2;
+                MessageBox.Show(d.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
+        }
     }
 }

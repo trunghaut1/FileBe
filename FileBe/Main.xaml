@@ -6,13 +6,14 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:Converters="clr-namespace:FileBe"
              mc:Ignorable="d" 
-             Width="225" Height="500" VerticalAlignment="Top">
+             Width="225" Height="500" VerticalAlignment="Top" Name="FileBe">
     <UserControl.Resources>
         <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </UserControl.Resources>
     <StackPanel Name="grMain">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -91,6 +92,22 @@
                 <Viewbox Width="24" Height="24" Grid.Column="2" Grid.Row="0" Margin="0 0 0 5">
                     <Path Data="M162 165l-159 0 -3 0 0 -3 0 -159 6 0 0 156 156 0 0 6zm3 -157l-6 0 0 -5 6 0 0 5zm-6 154l0 -2 6 0 0 2 -6 0zm6 -19l-6 0 0 -5 6 0 0 5zm0 -22l-6 0 0 -6 6 0 0 6zm0 -23l-6 0 0 -5 6 0 0 5zm0 -22l-6 0 0 -6 6 0 0 6zm0 -23l-6 0 0 -5 6 0 0 5zm0 -22l-6 0 0 -6 6 0 0 6zM8 0L8 6 3 6 3 0 8 0Zm154 6l-2 0 0 -6 2 0 0 6zm-19 -6l0 6 -5 0 0 -6 5 0zm-22 0l0 6 -6 0 0 -6 6 0zm-23 0l0 6 -5 0 0 -6 5 0zm-22 0l0 6 -6 0 0 -6 6 0zm-23 0l0 6 -5 0 0 -6 5 0zm-22 0l0 6 -6 0 0 -6 6 0z" Stroke="Black" StrokeThickness="5"/>
                 </Viewbox>
+            </Grid>
+            <Grid Grid.Row="4" Margin="0 10 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.Row="0" Grid.ColumnSpan="2" Height="3" Fill="Red" VerticalAlignment="Bottom" Margin="0 0 0 0"/>
+                <Label Grid.Row="1" Content="Chèn logo nhỏ" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <Button Name="btnCalSizeInsert" Grid.Column="2" Grid.Row="2" Content="Tính toán" Height="25" Click="btnCalSizeInsert_Click"/>
+                <Button Name="btnDelImg" Grid.Column="2" Grid.Row="3" Content="Xóa ảnh" Height="25" Click="btnDelImg_Click"/>
             </Grid>
         </Grid>
     </StackPanel>
