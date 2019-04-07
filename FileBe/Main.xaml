@@ -6,7 +6,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:Converters="clr-namespace:FileBe"
              mc:Ignorable="d" 
-             Width="225" Height="500" VerticalAlignment="Top" Name="FileBe">
+             Width="225" Height="540" VerticalAlignment="Top" Name="FileBe">
     <UserControl.Resources>
         <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </UserControl.Resources>
@@ -99,15 +99,36 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Rectangle Grid.Row="0" Grid.ColumnSpan="2" Height="3" Fill="Red" VerticalAlignment="Bottom" Margin="0 0 0 0"/>
-                <Label Grid.Row="1" Content="Chèn logo nhỏ" Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold"/>
-                <Button Name="btnCalSizeInsert" Grid.Column="2" Grid.Row="2" Content="Tính toán" Height="25" Click="btnCalSizeInsert_Click"/>
-                <Button Name="btnDelImg" Grid.Column="2" Grid.Row="3" Content="Xóa ảnh" Height="25" Click="btnDelImg_Click"/>
+                <Rectangle Grid.Row="0" Height="3" Fill="Red" VerticalAlignment="Bottom" Margin="0 0 0 0"/>
+                <Label Grid.Row="1" Content="Chèn logo nhỏ" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <Button Name="btnCalSizeInsert" Grid.Row="2" Content="Tính toán" Height="25" Margin="50 0 50 5" Click="btnCalSizeInsert_Click"/>
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" Content="Khoảng cách:"/>
+                    <Label Grid.Column="1" Grid.Row="0" Content="{Binding Value,ElementName=numSpace}" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="3" Grid.Row="0" Content="mm"/>
+                    <Label Grid.Column="0" Grid.Row="1" Content="Cỡ con nhỏ:"/>
+                    <xctk:IntegerUpDown x:Name="numInsert" Grid.Column="1" Grid.Row="1" Value="1" Minimum="1" Margin="0 3" Height="25" KeyUp="numInsert_KeyUp" ValueChanged="numInsert_ValueChanged"/>
+                    <Label Grid.Column="3" Grid.Row="1" Content="mm"/>
+                </Grid>
+                <Grid Grid.Row="4" Margin="0 5 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btnCreInsert" Grid.Column="0" Content="Bế chèn" Height="25" Margin="10 0" Click="btnCreInsert_Click"/>
+                    <Button Name="btnDelImg" Grid.Column="1" Content="Xóa ảnh" Height="25" Click="btnDelImg_Click" Margin="10 0"/>
+                </Grid>
             </Grid>
         </Grid>
     </StackPanel>

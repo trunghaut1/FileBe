@@ -58,6 +58,7 @@ namespace FileBe
             lblWid.Content = "0";
             lblTotalSize.Content = "0";
             lblTotal.Content = "0";
+            numInsert.Value = 1;
         }
         private void calSize()
         {
@@ -246,17 +247,65 @@ namespace FileBe
         {
             try
             {
-                app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
-                ShapeRange orSh = app.ActiveSelectionRange;
-                double sRec = orSh.SizeHeight * orSh.SizeWidth;
-                double sEll = Math.Pow(orSh.SizeWidth / 2,2) * Math.PI;
-                double d = Math.Sqrt(((sRec - sEll) / 1.5775796) / Math.PI) * 2;
-                MessageBox.Show(d.ToString());
+                numInsert.Value = calSizeInsert();
+                numSpace.Value = 3;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi: " + ex.Message);
             }
+        }
+        private int calSizeInsert()
+        {
+            try
+            {
+                if (app?.ActiveSelectionRange == null) return 0;
+                app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+                ShapeRange orSh = app.ActiveSelectionRange;
+                if (orSh.Count < 1) return 0;
+                double sRec = orSh.SizeHeight * orSh.SizeWidth;
+                double sEll = Math.Pow(orSh.SizeWidth / 2, 2) * Math.PI;
+                double d = Math.Sqrt(((sRec - sEll) / 1.5775796) / Math.PI) * 2;
+                int round = (int)Math.Round(d * 10, 0);
+                return round;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi:" + ex.Message);
+                return 0;
+            }
+        }
+        private void numInsertChange()
+        {
+            try
+            {
+                int size = calSizeInsert();
+                if (size < 1) return;
+                if (numInsert.Value == 1) return;
+                if (numInsert.Value > size)
+                {
+                    int round = (int)(((numInsert.Value - size) ?? 0) / 1.2);
+                    numSpace.Value = round + 3;
+                }
+                else numSpace.Value = 3;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
+        }
+        private void numInsert_KeyUp(object sender, KeyEventArgs e)
+        {
+            numInsertChange();
+        }
+        private void numInsert_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            numInsertChange();
+        }
+
+        private void btnCreInsert_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
