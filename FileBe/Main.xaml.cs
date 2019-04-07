@@ -1,17 +1,8 @@
 ﻿using Corel.Interop.VGCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FileBe
 {
@@ -228,14 +219,16 @@ namespace FileBe
             try
             {
                 ShapeRange orSh = app.ActiveSelectionRange;
+                ShapeRange img = new ShapeRange();
                 if (orSh.Count == 1)
                     orSh.UngroupAll();
-                foreach(Corel.Interop.VGCore.Shape sh in orSh)
+                foreach(Shape sh in orSh)
                 {
                     if (sh.Type == cdrShapeType.cdrBitmapShape)
-                        sh.Delete();
-                    //MessageBox.Show(sh.Type.ToString());
+                        img.Add(sh);
                 }
+                //MessageBox.Show(img.Count.ToString());
+                img.Delete();
             }
             catch (Exception ex)
             {
@@ -305,7 +298,56 @@ namespace FileBe
 
         private void btnCreInsert_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+                Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
+                ShapeRange orSh = app.ActiveSelectionRange;
+                double size = (numInsert.Value ?? 0) / 10.0;
+                if (size == 0) return;
+                double space = 0;
+                ShapeRange insert = app.ActiveSelectionRange.Duplicate(0, 0);
+                app.ActiveDocument.ReferencePoint = cdrReferencePoint.cdrBottomRight;
+                insert.SizeHeight = size;
+                insert.SizeWidth = size;
+                app.ActiveDocument.ReferencePoint = cdrReferencePoint.cdrTopLeft;
+                double move = (size / 2) + (spaceCal() / 2);
+                insert.Move(move, -move);
+                for (int i = 1; i < numRow.Value; i++)
+                {
+                    space += s.y + spaceCal();
+                    orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
+                }
+                orSh.CreateSelection();
+                space = 0;
+                for (int j = 1; j < numCol.Value; j++)
+                {
+                    space += s.x + spaceCal();
+                    orSh.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
+                }
+                space = 0;
+                insert.CreateSelection();
+                ShapeRange insertRange = insert;
+                for (int ii = 1; ii < numRow.Value - 1; ii++)
+                {
+                    space += s.y + spaceCal();
+                    insertRange.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
+                }
+                space = 0;
+                insertRange.CreateSelection();
+                for (int jj = 1; jj < numCol.Value - 1; jj++)
+                {
+                    space += s.x + spaceCal();
+                    insertRange.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
+                }
+                orSh.AddRange(insertRange);
+                orSh.Group();
+                app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY).CreateSelection();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
         }
     }
 }
