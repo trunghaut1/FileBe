@@ -1,0 +1,28 @@
+﻿using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
+
+namespace FlatTheme.Code
+{
+    public class TextFieldHintVisibilityConverter : IValueConverter
+    {
+        public Visibility IsEmptyValue { get; set; }
+        public Visibility IsNotEmptyValue { get; set; }
+        public TextFieldHintVisibilityConverter()
+        {
+            IsEmptyValue = Visibility.Visible;
+            IsNotEmptyValue = Visibility.Hidden;
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.IsNullOrEmpty((value ?? "").ToString()) ? IsEmptyValue : IsNotEmptyValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Binding.DoNothing;
+        }
+    }
+}

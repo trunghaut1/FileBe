@@ -5,10 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:Converters="clr-namespace:FileBe"
+             xmlns:number="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib"
+             xmlns:fl="clr-namespace:FlatTheme.ControlStyle;assembly=FlatTheme"
+             xmlns:ex="clr-namespace:FlatTheme.Code;assembly=FlatTheme"
              mc:Ignorable="d" 
              Width="225" Height="540" VerticalAlignment="Top" Name="FileBe">
     <UserControl.Resources>
-        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <ResourceDictionary>
+            <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <!-- Thay đổi style ở đây -->
+                        <ResourceDictionary Source="/FlatTheme;component/ColorStyle/BlueGrey.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+                <!-- Load tất cả các Control (không cần thay đổi) -->
+                <ResourceDictionary Source="/FlatTheme;component/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Name="grMain">
         <Grid>
@@ -67,7 +82,7 @@
                 <Label Grid.Column="2" Grid.Row="0" Content="cm"/>
                 <Label Grid.Column="2" Grid.Row="1" Content="cm"/>
                 <Label Grid.Column="2" Grid.Row="2" Content="m"/>
-                <Button Name="btnReCal" Grid.Row="4" Content="Ước Tính" Grid.ColumnSpan="3" Margin="50 0 50 10" Click="btnReCal_Click"/>
+                <Button Name="btnReCal" Grid.Row="4" Content="Ước Tính" Grid.ColumnSpan="3" Height="25" Margin="50 0 50 10" Click="btnReCal_Click"/>
                 <Rectangle Grid.Row="4" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Stroke="LightBlue" Margin="10 0"/>
             </Grid>
             <Grid Grid.Row="3" Margin="0 10 0 0">

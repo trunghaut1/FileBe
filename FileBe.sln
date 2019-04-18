@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileBe", "FileBe\FileBe.csproj", "{92FBD65C-6C39-4DA2-AE64-987931ECC48F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{EA2D9773-10C4-404B-8651-36B673E83356}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatTheme", "FlatTheme\FlatTheme.csproj", "{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +23,10 @@ Global
 		{EA2D9773-10C4-404B-8651-36B673E83356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA2D9773-10C4-404B-8651-36B673E83356}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA2D9773-10C4-404B-8651-36B673E83356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

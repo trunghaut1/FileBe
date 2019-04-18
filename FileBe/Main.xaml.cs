@@ -33,10 +33,11 @@ namespace FileBe
             app = (Corel.Interop.CorelDRAW.Application)_app;
             //app.Application.SelectionChange += new DIVGApplicationEvents_SelectionChangeEventHandler(SelectionChanged);
         }
-
-        private void SelectionChanged()
+        private void ChangeTheme()
         {
-            //MessageBox.Show("a");
+            ResourceDictionary resourceDict = System.Windows.Application.LoadComponent(new Uri("/FlatTheme;component/ColorStyle/BlueLight.xaml", UriKind.Relative)) as ResourceDictionary;
+            Resources.MergedDictionaries[0].Clear();
+            Resources.MergedDictionaries[0].MergedDictionaries.Add(resourceDict);
         }
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
