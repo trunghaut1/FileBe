@@ -99,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ColorStyle\LightBlue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ColorStyle\OrangeDark.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

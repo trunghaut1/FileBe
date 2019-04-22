@@ -81,8 +81,8 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="TextBlock.FontWeight" Value="DemiBold"/>
         <Setter Property="Padding" Value="1"/>
-        <Setter Property="MinWidth" Value="30" />
-        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="MinWidth" Value="20" />
+        <Setter Property="MinHeight" Value="20" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -90,7 +90,7 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup Name="CommonStates">
                                 <VisualState Name="Normal"/>
-                                <VisualState Name="MouseOver">
+                                <!--<VisualState Name="MouseOver">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="OverEff" Storyboard.TargetProperty="Opacity"
                   To="0.15" Duration="0:0:0"/>
@@ -101,7 +101,7 @@
                                         <DoubleAnimation Storyboard.TargetName="OverEff" Storyboard.TargetProperty="Opacity"
                   To="0" Duration="0:0:0.5" BeginTime="0:0:0.16"/>
                                     </Storyboard>
-                                </VisualState>
+                                </VisualState>-->
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="0"
