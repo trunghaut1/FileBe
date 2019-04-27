@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:Converters="clr-namespace:FileBe"
-             xmlns:number="clr-namespace:NumericUpDownLib"
+             xmlns:number="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib"
              mc:Ignorable="d" 
-             Width="225" Height="580" VerticalAlignment="Top" Name="FileBe">
+             Width="225" Height="648" VerticalAlignment="Top" Name="FileBe">
     <UserControl.Resources>
         <ResourceDictionary>
             <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
@@ -32,13 +32,14 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Name="btnReset" Grid.Column="0" Margin="5 10" Height="28" Click="btnReset_Click">
+                <Button Name="btnReset" Grid.Column="0" Margin="5 10" Height="28" Click="btnReset_Click" ToolTip="Khôi phục thông số về ban đầu">
                     <Grid Margin="-15 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -50,7 +51,7 @@
                         <Label Grid.Column="1" Content="Khôi phục" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
                     </Grid>
                 </Button>
-                <Button Name="btnReCal" Grid.Column="1" Height="28" Margin="5 10" Click="btnReCal_Click">
+                <Button Name="btnReCal" Grid.Column="1" Height="28" Margin="5 10" Click="btnReCal_Click" ToolTip="Tính toán lại thông số file bế">
                     <Grid Margin="-15 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -79,9 +80,10 @@
                 <Label Grid.Column="0" Grid.Row="0" Content="Số cột:"/>
                 <Label Grid.Column="0" Grid.Row="1" Content="Số hàng:"/>
                 <Label Grid.Column="0" Grid.Row="2" Content="Khoảng cách:"/>
-                <number:NumericUpDown2 Width="80" x:Name="numCol" Grid.Column="1" Grid.Row="0" Value="1" MinValue="1" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp"/>
-                <number:NumericUpDown2 Width="80" x:Name="numRow" Grid.Column="1" Grid.Row="1" Value="1" MinValue="1" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp"/>
-                <number:NumericUpDown2 Width="80" x:Name="numSpace" Grid.Column="1" Grid.Row="2" Value="1" MinValue="1" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}"/>
+                <number:NumericUpDown Width="80" x:Name="numCol" Grid.Column="1" Grid.Row="0" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp"/>
+                <number:NumericUpDown x:Name="MiniumValue" Value="1" MaxValue="1" Visibility="Hidden" />
+                <number:NumericUpDown Width="80" x:Name="numRow" Grid.Column="1" Grid.Row="1" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp"/>
+                <number:NumericUpDown Width="80" x:Name="numSpace" Grid.Column="1" Grid.Row="2" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}"/>
                 <Label Grid.Column="2" Grid.Row="2" Content="(mm)"/>
                 <CheckBox Content="Không khoảng cách" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Center" Name="chkUnSpace" Margin="0 5 0 10" Checked="chkUnSpace_Checked" Unchecked="chkUnSpace_Checked"/>
                 <Rectangle Grid.Row="3" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Stroke="{DynamicResource MainColorLight}" Margin="10 0"/>
@@ -122,9 +124,9 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Grid.Column="0" Name="btnCreate" Grid.Row="1" Content="Bế thường" Margin="5 0" Height="25" Click="btnCreate_Click"/>
-                <Button Grid.Column="1" Name="btnCrLine"  Grid.Row="1" Content="Bế thẳng" Margin="5 0" Height="25" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked}" Click="btnCrLine_Click"/>
-                <Button Grid.Column="2" Name="btnCrSemiLine" Grid.Row="1" Content="Bế đứt" Margin="0,0,5,0" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked}" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" Width="65" Click="btnCrSemiLine_Click"/>
+                <Button Grid.Column="0" Name="btnCreate" Grid.Row="1" Content="Bế thường" Margin="5 0" Height="28" Click="btnCreate_Click" ToolTip="Xếp con bế theo thông số đã chọn"/>
+                <Button Grid.Column="1" Name="btnCrLine"  Grid.Row="1" Content="Bế thẳng" Margin="5 0" Height="28" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked}" Click="btnCrLine_Click" ToolTip="Tạo đường bế thẳng ngang và dọc"/>
+                <Button Grid.Column="2" Name="btnCrSemiLine" Grid.Row="1" Content="Bế đứt"  Margin="0,0,5,0" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked}" Height="28" VerticalAlignment="Top" HorizontalAlignment="Right" Width="65" Click="btnCrSemiLine_Click" ToolTip="Tạo đường bế vuông cắt nửa phần"/>
                 <Viewbox Width="24" Height="24" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
                     <Path Data="M27 3l109 0c13.296 0 24 11.596 24 26l0 105c0 14.404 -10.704 26 -24 26L27 160C13.704 160 3 148.404 3 134L3 29C3 14.596 13.704 3 27 3Z" Stroke="Black" StrokeThickness="10"/>
                 </Viewbox>
@@ -145,7 +147,7 @@
                 </Grid.RowDefinitions>
                 <Rectangle Grid.Row="0" Height="3" Fill="{DynamicResource MainColorLight}" VerticalAlignment="Bottom" Margin="0 0 0 0"/>
                 <Label Grid.Row="1" Content="Chèn logo nhỏ" HorizontalAlignment="Center" FontWeight="Bold"/>
-                <Button Name="btnCalSizeInsert" Grid.Row="2" Margin="15 0 15 5" Height="28" Click="btnCalSizeInsert_Click">
+                <Button Name="btnCalSizeInsert" Grid.Row="2" Margin="15 0 15 5" Height="28" Click="btnCalSizeInsert_Click" ToolTip="Tự động tính cỡ con chèn lớn nhất">
                     <Grid Margin="-45 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -171,20 +173,78 @@
                     <Label Grid.Column="1" Grid.Row="0" Content="{Binding Value,ElementName=numSpace}" HorizontalAlignment="Center"/>
                     <Label Grid.Column="3" Grid.Row="0" Content="mm"/>
                     <Label Grid.Column="0" Grid.Row="1" Content="Cỡ con nhỏ:"/>
-                    <number:FloatUpDown2 x:Name="numInsert" Width="60" Grid.Column="1" Grid.Row="1" Value="0" MinValue="0" MaxValue="100" Margin="0 3" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="5" StepSize="0.1" NumberStyle="Float" FormatString="F1" PreviewKeyUp="numInsert_PreviewKeyUp"/>
+                    <number:FloatUpDown x:Name="numInsert" Width="60" Grid.Column="1" Grid.Row="1" Value="0" MinValue="0" MaxValue="100" Margin="0 3" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="5" StepSize="0.1" NumberStyle="Float" FormatString="F1" PreviewKeyUp="numInsert_PreviewKeyUp" ValueChanged="numInsert_ValueChanged"/>
                     <Label Grid.Column="3" Grid.Row="1" Content="cm"/>
                 </Grid>
-                <Grid Grid.Row="4" Margin="0 5 0 0">
+                <StackPanel Grid.Row="4" Margin="0 5 0 10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Viewbox Width="24" Height="24" Margin="0 0 5 0">
+                        <Path Data="M119 0c33,0 63,13 84,35 22,21 35,51 35,84 0,33 -13,63 -35,84 -21,22 -51,35 -84,35 -33,0 -63,-13 -84,-35 -22,-21 -35,-51 -35,-84 0,-33 13,-63 35,-84 21,-22 51,-35 84,-35zm76 43c-19,-20 -46,-32 -76,-32 -30,0 -57,12 -76,32 -20,19 -32,46 -32,76 0,30 12,57 32,76 19,20 46,32 76,32 30,0 57,-12 76,-32 20,-19 32,-46 32,-76 0,-30 -12,-57 -32,-76zm210 -43c32,0 62,13 84,35 21,21 35,51 35,84 0,33 -14,63 -35,84 -22,22 -52,35 -84,35 -33,0 -63,-13 -85,-35 -21,-21 -34,-51 -34,-84 0,-33 13,-63 34,-84 22,-22 52,-35 85,-35zm76 43c-20,-20 -47,-32 -76,-32 -30,0 -57,12 -77,32 -19,19 -31,46 -31,76 0,30 12,57 31,76 20,20 47,32 77,32 29,0 56,-12 76,-32 19,-19 31,-46 31,-76 0,-30 -12,-57 -31,-76zm-362 243c33,0 63,13 84,34 22,22 35,52 35,85 0,32 -13,62 -35,84 -21,21 -51,35 -84,35 -33,0 -63,-14 -84,-35 -22,-22 -35,-52 -35,-84 0,-33 13,-63 35,-85 21,-21 51,-34 84,-34zm76 42c-19,-19 -46,-31 -76,-31 -30,0 -57,12 -76,31 -20,20 -32,47 -32,77 0,29 12,56 32,76 19,19 46,31 76,31 30,0 57,-12 76,-31 20,-20 32,-47 32,-76 0,-30 -12,-57 -32,-77zm210 -42c32,0 62,13 84,34 21,22 35,52 35,85 0,32 -14,62 -35,84 -22,21 -52,35 -84,35 -33,0 -63,-14 -85,-35 -21,-22 -34,-52 -34,-84 0,-33 13,-63 34,-85 22,-21 52,-34 85,-34zm76 42c-20,-19 -47,-31 -76,-31 -30,0 -57,12 -77,31 -19,20 -31,47 -31,77 0,29 12,56 31,76 20,19 47,31 77,31 29,0 56,-12 76,-31 19,-20 31,-47 31,-76 0,-30 -12,-57 -31,-77zm-219 -146c44,0 79,36 79,80 0,44 -35,79 -79,79 -44,0 -80,-35 -80,-79 0,-44 36,-80 80,-80z" Stroke="Black" StrokeThickness="5" Fill="Black"/>
+                    </Viewbox>
+                    <Button Name="btnCreInsert" Content="Bế chèn" Height="28" Width="100" Click="btnCreInsert_Click" ToolTip="Xếp con bế và chèn vào con nhỏ"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Rectangle Grid.Row="0" Grid.ColumnSpan="2"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 10"/>
+            <Button Name="btnDelImg" Grid.Row="1" Grid.Column="0" Height="28" Click="btnDelImg_Click" Margin="5 0 5 8" ToolTip="Xóa ảnh giữ lại đường bế">
+                <Grid Margin="-30 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnCreInsert" Grid.Column="0" Content="Bế chèn" Height="25" Margin="10 0" Click="btnCreInsert_Click"/>
-                    <Button Name="btnDelImg" Grid.Column="1" Content="Xóa ảnh" Height="25" Click="btnDelImg_Click" Margin="10 0"/>
+                    <Viewbox Width="16" Height="16" Grid.Column="0">
+                        <Path Data="M21 15h2v2h-2v-2zm0-4h2v2h-2v-2zm2 8h-2v2c1 0 2-1 2-2zM13 3h2v2h-2V3zm8 4h2v2h-2V7zm0-4v2h2c0-1-1-2-2-2zM1 7h2v2H1V7zm16-4h2v2h-2V3zm0 16h2v2h-2v-2zM3 3C2 3 1 4 1 5h2V3zm6 0h2v2H9V3zM5 3h2v2H5V3zm-4 8v8c0 1.1.9 2 2 2h12V11H1zm2 8l2.5-3.21 1.79 2.15 2.5-3.22L13 19H3z" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" StrokeThickness="0.5"/>
+                    </Viewbox>
+                    <Label Grid.Column="1" Content="Xóa ảnh" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
                 </Grid>
-            </Grid>
+            </Button>
+            <Button Name="btnCreaRec" Grid.Row="1" Grid.Column="1" Height="28" Margin="3 0 5 8" Click="btnCreaRec_Click" ToolTip="Tạo khung vuông khớp với đối tượng">
+                <Grid Margin="-33 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Width="16" Height="16" Grid.Column="0">
+                        <Path Data="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" StrokeThickness="0.5"/>
+                    </Viewbox>
+                    <Label Grid.Column="1" Content="Khung vuông" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
+                </Grid>
+            </Button>
+            <Button Name="btnCreaEll" Grid.Row="2" Grid.Column="0" Height="28" Margin="5 0 5 0" Click="btnCreaEll_Click" ToolTip="Tạo khung tròn khớp với đối tượng">
+                <Grid Margin="-30 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Width="16" Height="16" Grid.Column="0">
+                        <Path Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" StrokeThickness="0.5"/>
+                    </Viewbox>
+                    <Label Grid.Column="1" Content="Khung tròn" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
+                </Grid>
+            </Button>
+            <Button Name="btnCreaSize" Grid.Row="2" Grid.Column="1" Height="28" Margin="3 0 5 0" Click="btnCreaSize_Click" ToolTip="Tạo kích thước xung quanh theo đối tượng">
+                <Grid Margin="-30 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Width="16" Height="16" Grid.Column="0">
+                        <Path Data="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h2v8z" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" StrokeThickness="0.5"/>
+                    </Viewbox>
+                    <Label Grid.Column="1" Content="Kích thước" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
+                </Grid>
+            </Button>
         </Grid>
-        <Grid Grid.Row="5" VerticalAlignment="Bottom" Margin="0 5 0 0" HorizontalAlignment="Center">
+        <Grid Grid.Row="6" VerticalAlignment="Bottom" Margin="0 15 0 0" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <Button Style="{DynamicResource CircleButton}" Background="#0091EA" Height="22" Width="22" Margin="2 0" Tag="lightblue" Click="btnChangeTheme_Click"/>
                 <Button Style="{DynamicResource CircleButton}" Background="#607D8B" Height="22" Width="22" Margin="2 0" Tag="bluegrey" Click="btnChangeTheme_Click"/>

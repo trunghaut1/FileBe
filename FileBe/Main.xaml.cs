@@ -46,17 +46,13 @@ namespace FileBe
             lblWid.Content = "0";
             lblTotalSize.Content = "0";
             lblTotal.Content = "0";
-            numInsert.Value = 1;
+            numInsert.Value = 0;
         }
         private void calSize()
         {
             if (app?.ActiveDocument == null) return;
+            if (app.ActiveSelectionRange.Count < 1) return;
             app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
-            if (app.ActiveSelectionRange.Count < 1)
-            {
-                MessageBox.Show(err, "Lỗi");
-                return;
-            }
             try
             {
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
@@ -221,12 +217,17 @@ namespace FileBe
 
         private void btnDelImg_Click(object sender, RoutedEventArgs e)
         {
+            if (app?.ActiveDocument == null) return;
+            if (app.ActiveSelectionRange.Count < 1)
+            {
+                MessageBox.Show(err, "Lỗi");
+                return;
+            }
             try
             {
                 ShapeRange orSh = app.ActiveSelectionRange;
                 ShapeRange img = new ShapeRange();
-                if (orSh.Count == 1)
-                    orSh.UngroupAll();
+                orSh.UngroupAll();
                 foreach(Shape sh in orSh)
                 {
                     if (sh.Type == cdrShapeType.cdrBitmapShape)
@@ -253,7 +254,7 @@ namespace FileBe
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
         }
-        private int calSizeInsert()
+        private float calSizeInsert()
         {
             try
             {
@@ -264,8 +265,7 @@ namespace FileBe
                 double sRec = orSh.SizeHeight * orSh.SizeWidth;
                 double sEll = Math.Pow(orSh.SizeWidth / 2, 2) * Math.PI;
                 double d = Math.Sqrt(((sRec - sEll) / 1.5775796) / Math.PI) * 2;
-                int round = (int)Math.Round(d * 10, 0);
-                return round;
+                return (float)Math.Round(d, 1);
             }
             catch (Exception ex)
             {
@@ -277,12 +277,12 @@ namespace FileBe
         {
             try
             {
-                int size = calSizeInsert();
-                if (size < 1) return;
-                if (numInsert.Value == 1) return;
+                float size = calSizeInsert();
+                if (size <= 0) return;
+                if (numInsert.Value == 0) return;
                 if (numInsert.Value > size)
                 {
-                    int round = (int)((numInsert.Value - size) / 1.2);
+                    int round = (int)((numInsert.Value*10 - size*10) / 1.2);
                     numSpace.Value = round + 3;
                 }
                 else numSpace.Value = 3;
@@ -292,23 +292,30 @@ namespace FileBe
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
         }
-        private void numInsert_KeyUp(object sender, KeyEventArgs e)
-        {
-            numInsertChange();
-        }
-        private void numInsert_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            numInsertChange();
-        }
 
         private void btnCreInsert_Click(object sender, RoutedEventArgs e)
         {
+            if (app?.ActiveDocument == null) return;
+            if (app.ActiveSelectionRange.Count < 1)
+            {
+                MessageBox.Show(err, "Lỗi");
+                return;
+            }
             try
             {
                 app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
-                double size = numInsert.Value / 10.0;
+                if (orSh.Shapes[1].Type == cdrShapeType.cdrBitmapShape && orSh.Count == 1)
+                {
+                    Shape ell = app.ActiveLayer.CreateEllipse2(orSh.CenterX, orSh.CenterY, orSh.SizeWidth / 2, orSh.SizeHeight / 2);
+                    Shape newell = ell.Intersect(orSh.Shapes[1], true, true);
+                    orSh.Delete();
+                    orSh.Add(newell);
+                    orSh.Add(ell);
+                }
+                orSh.CreateSelection();            
+                double size = numInsert.Value;
                 if (size == 0) return;
                 double space = 0;
                 ShapeRange insert = app.ActiveSelectionRange.Duplicate(0, 0);
@@ -403,37 +410,27 @@ namespace FileBe
         }
         // Calculate size when NumericUpDown value changed
         private void cal_ValueChanged(object sender, RoutedPropertyChangedEventArgs<int> e)
-        {
-            NumericUpDown2 num = sender as NumericUpDown2;
-            if (num.Value < 1)
-                num.Value = 1;
-            else    
-                calSize();
+        {  
+            calSize();
         }
         // Change value NumericUpDown when Key Up
         private void cal_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            NumericUpDown2 num = sender as NumericUpDown2;
+            NumericUpDown num = sender as NumericUpDown;
             try
             {
-                int i = int.Parse(num._PART_TextBox.Text);
-                if (i < 1)
-                {
-                    if(num.Value == 1)
+                int i = int.Parse(num.txt.Text);
+                    if(i == 1)
                     {
-                        num._PART_TextBox.Text = "1";
+                        num.Value = i;
                         calSize();
                     }
                     else
-                    {
-                        num._PART_TextBox.Text = "1";
-                        num.Value = 1;
+                    {                       
+                        num.Value = i;
                     }    
-                }  
-                else
-                    num.Value = i;
             }
-            catch(Exception ex)
+            catch
             {
                 num.Value = 1;
             }
@@ -441,7 +438,102 @@ namespace FileBe
 
         private void numInsert_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+            FloatUpDown num = sender as FloatUpDown;
+            try
+            {
+                float i = float.Parse(num.txt.Text);
+                num.Value = i;
+            }
+            catch
+            {
+                num.Value = 0;
+            }
+        }
 
+        private void numInsert_ValueChanged(object sender, RoutedPropertyChangedEventArgs<float> e)
+        {
+            numInsertChange();
+        }
+
+        private void btnCreaRec_Click(object sender, RoutedEventArgs e)
+        {
+            if (app?.ActiveDocument == null) return;
+            if (app.ActiveSelectionRange.Count < 1)
+            {
+                MessageBox.Show(err, "Lỗi");
+                return;
+            }
+            try
+            {
+                ShapeRange orSh = app.ActiveSelectionRange;
+                app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+        }
+
+        private void btnCreaEll_Click(object sender, RoutedEventArgs e)
+        {
+            if (app?.ActiveDocument == null) return;
+            if (app.ActiveSelectionRange.Count < 1)
+            {
+                MessageBox.Show(err, "Lỗi");
+                return;
+            }
+            try
+            {
+                ShapeRange orSh = app.ActiveSelectionRange;
+                app.ActiveLayer.CreateEllipse2(orSh.CenterX, orSh.CenterY, orSh.SizeWidth/2, orSh.SizeHeight/2);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+        }
+
+        private void btnCreaSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (app?.ActiveDocument == null) return;
+            if (app.ActiveSelectionRange.Count < 1)
+            {
+                MessageBox.Show(err, "Lỗi");
+                return;
+            }
+            try
+            {
+                app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+                ShapeRange orSh = app.ActiveSelectionRange;
+                Size s = new Size(orSh.SizeWidth, orSh.SizeHeight);
+                int point = 0;
+                int space = (int)(Math.Sqrt(s.x) / 2);
+                if (s.x < 200)
+                {
+                    point = (int)s.x * 2;
+                }
+                else
+                {
+                    point = (int)s.x;
+                }
+                Shape sizeHeight = app.ActiveLayer.CreateArtisticText(0, 0, Math.Round(s.x / 100, 2).ToString() + "m");
+                sizeHeight.Text.FontProperties.Size = point;
+                Shape sizeWidth = app.ActiveLayer.CreateArtisticText(0, 0, Math.Round(s.y / 100, 2).ToString() + "m");
+                sizeWidth.Text.FontProperties.Size = point;
+                orSh.Add(sizeHeight);
+                orSh.AlignAndDistribute(cdrAlignDistributeH.cdrAlignDistributeHAlignCenter, cdrAlignDistributeV.cdrAlignDistributeVAlignTop,
+                     cdrAlignShapesTo.cdrAlignShapesToLastSelected, cdrDistributeArea.cdrDistributeToSelection, false);
+                sizeHeight.Move(0, space + sizeHeight.SizeHeight);
+                orSh.Remove(2);
+                orSh.Add(sizeWidth);
+                orSh.AlignAndDistribute(cdrAlignDistributeH.cdrAlignDistributeHAlignRight, cdrAlignDistributeV.cdrAlignDistributeVAlignCenter,
+                     cdrAlignShapesTo.cdrAlignShapesToLastSelected, cdrDistributeArea.cdrDistributeToSelection, false);
+                sizeWidth.Move(space + sizeWidth.SizeWidth, 0);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
         }
     }
 }

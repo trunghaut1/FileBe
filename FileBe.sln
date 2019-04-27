@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatTheme", "FlatTheme\FlatTheme.csproj", "{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumericUpDownLib", "NumericUpDownLib\NumericUpDownLib.csproj", "{98E332AC-86E6-4DB3-A757-4D84432B4A2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD9B70EF-DB16-449B-91FB-6ABB7B0F08DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98E332AC-86E6-4DB3-A757-4D84432B4A2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98E332AC-86E6-4DB3-A757-4D84432B4A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98E332AC-86E6-4DB3-A757-4D84432B4A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98E332AC-86E6-4DB3-A757-4D84432B4A2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
