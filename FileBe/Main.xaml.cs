@@ -20,6 +20,10 @@ namespace FileBe
         {
             InitializeComponent();
             app = (Corel.Interop.CorelDRAW.Application)_app;
+            numCol.ValueChanged += new RoutedPropertyChangedEventHandler<int>(cal_ValueChanged);
+            numRow.ValueChanged += new RoutedPropertyChangedEventHandler<int>(cal_ValueChanged);
+            numSpace.ValueChanged += new RoutedPropertyChangedEventHandler<int>(cal_ValueChanged);
+            numInsert.ValueChanged += new RoutedPropertyChangedEventHandler<float>(numInsert_ValueChanged);
             readTheme();
             //app.Application.SelectionChange += new DIVGApplicationEvents_SelectionChangeEventHandler(SelectionChanged);
         }
@@ -35,7 +39,7 @@ namespace FileBe
             Resources.MergedDictionaries[0].Clear();
             Resources.MergedDictionaries[0].MergedDictionaries.Add(resourceDict);
         }
-
+        // Khôi phục về giá trị mặc định
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
             numRow.Value = 1;
@@ -48,14 +52,15 @@ namespace FileBe
             lblTotal.Content = "0";
             numInsert.Value = 0;
         }
+        // Tính và hiển thị thông tin file bế
         private void calSize()
         {
             if (app?.ActiveDocument == null) return;
             if (app.ActiveSelectionRange.Count < 1) return;
             app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+            Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
             try
             {
-                Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 float space = spaceCal();
                 double wid = ((s.x + space) * numCol.Value) - space;
                 double hei = ((s.y + space) * numRow.Value) - space;
@@ -67,21 +72,6 @@ namespace FileBe
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.Source,"Lỗi");
-            }
-        }
-        private Size getTotalSize()
-        {
-            Size s = new Size();
-            try
-            {
-                s.x = app.ActiveSelection.SizeWidth * numCol.Value;
-                s.y = app.ActiveSelection.SizeHeight * numRow.Value;
-                return s;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
-                return null;
             }
         }
         private float spaceCal()
@@ -148,7 +138,7 @@ namespace FileBe
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = null;
                 Size position = new Size(app.ActiveSelectionRange.PositionX, app.ActiveSelectionRange.PositionY);
-                Size size = getTotalSize();
+                Size size = new Size(s.x * numCol.Value, s.y * numRow.Value);
                 app.ActiveSelection.Delete();
                 app.ActiveLayer.CreateLineSegment(position.x,position.y, position.x, position.y - size.y).CreateSelection();
                 orSh = app.ActiveSelectionRange;
@@ -177,11 +167,17 @@ namespace FileBe
 
         private void btnCrSemiLine_Click(object sender, RoutedEventArgs e)
         {
+            if (app?.ActiveDocument == null) return;
+            if (app.ActiveSelectionRange.Count < 1)
+            {
+                MessageBox.Show(err, "Lỗi");
+                return;
+            }
             try
             {
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
-                Corel.Interop.VGCore.Shape sh = app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
+                Shape sh = app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
                 sh.ConvertToCurves();
                 Curve c = app.ActiveDocument.CreateCurve();
                 SubPath ss = c.CreateSubPath(orSh.RightX, orSh.BottomY);
@@ -244,21 +240,14 @@ namespace FileBe
 
         private void btnCalSizeInsert_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
                 numInsert.Value = calSizeInsert();
                 numSpace.Value = 3;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
-            }
         }
         private float calSizeInsert()
         {
+            if (app?.ActiveSelectionRange == null) return 0;
             try
             {
-                if (app?.ActiveSelectionRange == null) return 0;
                 app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
                 ShapeRange orSh = app.ActiveSelectionRange;
                 if (orSh.Count < 1) return 0;
@@ -313,8 +302,8 @@ namespace FileBe
                     orSh.Delete();
                     orSh.Add(newell);
                     orSh.Add(ell);
-                }
-                orSh.CreateSelection();            
+                    orSh.CreateSelection();
+                }          
                 double size = numInsert.Value;
                 if (size == 0) return;
                 double space = 0;
@@ -386,22 +375,29 @@ namespace FileBe
         }
         private void readTheme()
         {
+            string path = Environment.GetFolderPath(
+                Environment.SpecialFolder.LocalApplicationData) + "\\FileBe\\color.ini";
             try
             {
-                string theme = File.ReadAllText(@"Addons\FileBe\color.ini");
-                if(theme != null && theme.Length > 0)
-                    ChangeTheme(theme);
+                if (File.Exists(path))
+                {
+                    string theme = File.ReadAllText(path);
+                    if (theme != null && theme.Length > 0)
+                        ChangeTheme(theme);
+                }
             }
-            catch(Exception ex)
+            catch
             {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+                //MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
         }
         private void writeTheme(string theme)
         {
+            string path = Environment.GetFolderPath(
+                Environment.SpecialFolder.LocalApplicationData) + "\\FileBe\\color.ini";
             try
             {
-                File.WriteAllText(@"Addons\FileBe\color.ini", theme);
+                File.WriteAllText(path, theme);
             }
             catch(Exception ex)
             {

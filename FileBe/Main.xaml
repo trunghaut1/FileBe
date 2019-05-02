@@ -3,11 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:Converters="clr-namespace:FileBe"
              xmlns:number="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib"
              mc:Ignorable="d" 
-             Width="225" Height="648" VerticalAlignment="Top" Name="FileBe">
+             Width="225" Height="670" VerticalAlignment="Top">
     <UserControl.Resources>
         <ResourceDictionary>
             <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
@@ -80,10 +79,10 @@
                 <Label Grid.Column="0" Grid.Row="0" Content="Số cột:"/>
                 <Label Grid.Column="0" Grid.Row="1" Content="Số hàng:"/>
                 <Label Grid.Column="0" Grid.Row="2" Content="Khoảng cách:"/>
-                <number:NumericUpDown Width="80" x:Name="numCol" Grid.Column="1" Grid.Row="0" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp"/>
+                <number:NumericUpDown Width="80" x:Name="numCol" Grid.Column="1" Grid.Row="0" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" PreviewKeyUp="cal_PreviewKeyUp"/>
                 <number:NumericUpDown x:Name="MiniumValue" Value="1" MaxValue="1" Visibility="Hidden" />
-                <number:NumericUpDown Width="80" x:Name="numRow" Grid.Column="1" Grid.Row="1" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp"/>
-                <number:NumericUpDown Width="80" x:Name="numSpace" Grid.Column="1" Grid.Row="2" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" ValueChanged="cal_ValueChanged" PreviewKeyUp="cal_PreviewKeyUp" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}"/>
+                <number:NumericUpDown Width="80" x:Name="numRow" Grid.Column="1" Grid.Row="1" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False"  PreviewKeyUp="cal_PreviewKeyUp"/>
+                <number:NumericUpDown Width="80" x:Name="numSpace" Grid.Column="1" Grid.Row="2" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" PreviewKeyUp="cal_PreviewKeyUp" IsEnabled="{Binding ElementName=chkUnSpace, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}"/>
                 <Label Grid.Column="2" Grid.Row="2" Content="(mm)"/>
                 <CheckBox Content="Không khoảng cách" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Center" Name="chkUnSpace" Margin="0 5 0 10" Checked="chkUnSpace_Checked" Unchecked="chkUnSpace_Checked"/>
                 <Rectangle Grid.Row="3" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Stroke="{DynamicResource MainColorLight}" Margin="10 0"/>
@@ -173,7 +172,7 @@
                     <Label Grid.Column="1" Grid.Row="0" Content="{Binding Value,ElementName=numSpace}" HorizontalAlignment="Center"/>
                     <Label Grid.Column="3" Grid.Row="0" Content="mm"/>
                     <Label Grid.Column="0" Grid.Row="1" Content="Cỡ con nhỏ:"/>
-                    <number:FloatUpDown x:Name="numInsert" Width="60" Grid.Column="1" Grid.Row="1" Value="0" MinValue="0" MaxValue="100" Margin="0 3" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="5" StepSize="0.1" NumberStyle="Float" FormatString="F1" PreviewKeyUp="numInsert_PreviewKeyUp" ValueChanged="numInsert_ValueChanged"/>
+                    <number:FloatUpDown x:Name="numInsert" Width="60" Grid.Column="1" Grid.Row="1" Value="0" MinValue="0" MaxValue="100" Margin="0 3" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="5" StepSize="0.1" NumberStyle="Float" FormatString="F1" PreviewKeyUp="numInsert_PreviewKeyUp"/>
                     <Label Grid.Column="3" Grid.Row="1" Content="cm"/>
                 </Grid>
                 <StackPanel Grid.Row="4" Margin="0 5 0 10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
