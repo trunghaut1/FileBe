@@ -7,13 +7,15 @@
     <SolidColorBrush x:Key="TextColorLight" Color="#37474F"/>
 
     <!-- Màu chính -->
+    <Color x:Key="GColor1">#0091EA</Color>
+    <Color x:Key="GColor2">#00E5FF</Color>
     <SolidColorBrush x:Key="MainColor" Color="#0091EA"/>
     <SolidColorBrush x:Key="MainColorLight" Color="#00B0FF"/>
     <SolidColorBrush x:Key="MainColorExtraLight" Color="#80D8FF"/>
     <SolidColorBrush x:Key="MainColorDark" Color="#01579B"/>
 
     <!-- Màu nền cửa sổ -->
-    <SolidColorBrush x:Key="BackgroundColor" Color="#FFFBFEFF"/>
+    <SolidColorBrush x:Key="BackgroundColor" Color="White"/>
 
     <!-- Màu vô hiệu hóa -->
     <SolidColorBrush x:Key="DisableColor" Color="#B0BEC5"/>

@@ -15,7 +15,14 @@
     <!-- Button mặc định -->
     <Style x:Key="FlatButton" TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-        <Setter Property="Background" Value="{DynamicResource MainColor}"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                    <GradientStop Color="{DynamicResource GColor1}" Offset="0"/>
+                    <GradientStop Color="{DynamicResource GColor2}" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Foreground" Value="{DynamicResource BackgroundColor}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="TextBlock.FontWeight" Value="DemiBold"/>

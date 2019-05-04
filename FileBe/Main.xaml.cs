@@ -395,8 +395,10 @@ namespace FileBe
         {
             string path = Environment.GetFolderPath(
                 Environment.SpecialFolder.LocalApplicationData) + "\\FileBe\\color.ini";
+            FileInfo file = new FileInfo(path);
             try
             {
+                file.Directory.Create();
                 File.WriteAllText(path, theme);
             }
             catch(Exception ex)
@@ -488,8 +490,7 @@ namespace FileBe
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
         }
-
-        private void btnCreaSize_Click(object sender, RoutedEventArgs e)
+        private void CreateSize(bool isMeter)
         {
             if (app?.ActiveDocument == null) return;
             if (app.ActiveSelectionRange.Count < 1)
@@ -512,9 +513,20 @@ namespace FileBe
                 {
                     point = (int)s.x;
                 }
-                Shape sizeHeight = app.ActiveLayer.CreateArtisticText(0, 0, Math.Round(s.x / 100, 2).ToString() + "m");
+                string width, height;
+                if(isMeter)
+                {
+                    width = Math.Round(s.x / 100, 2).ToString() + "m";
+                    height = Math.Round(s.y / 100, 2).ToString() + "m";
+                }
+                else
+                {
+                    width = Math.Round(s.x, 1).ToString() + "cm";
+                    height = Math.Round(s.y, 1).ToString() + "cm";
+                }
+                Shape sizeHeight = app.ActiveLayer.CreateArtisticText(0, 0, width);
                 sizeHeight.Text.FontProperties.Size = point;
-                Shape sizeWidth = app.ActiveLayer.CreateArtisticText(0, 0, Math.Round(s.y / 100, 2).ToString() + "m");
+                Shape sizeWidth = app.ActiveLayer.CreateArtisticText(0, 0, height);
                 sizeWidth.Text.FontProperties.Size = point;
                 orSh.Add(sizeHeight);
                 orSh.AlignAndDistribute(cdrAlignDistributeH.cdrAlignDistributeHAlignCenter, cdrAlignDistributeV.cdrAlignDistributeVAlignTop,
@@ -530,6 +542,16 @@ namespace FileBe
             {
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
+        }
+
+        private void btnCreaSize_Click(object sender, RoutedEventArgs e)
+        {
+            CreateSize(true);
+        }
+
+        private void btnCreaSize_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            CreateSize(false);
         }
     }
 }

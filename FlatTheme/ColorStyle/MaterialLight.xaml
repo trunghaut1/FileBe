@@ -7,6 +7,8 @@
     <SolidColorBrush x:Key="TextColorLight" Color="#37474F"/>
 
     <!-- Màu chính -->
+    <Color x:Key="GColor1">#0E5CAD</Color>
+    <Color x:Key="GColor2">#79F1A4</Color>
     <SolidColorBrush x:Key="MainColor" Color="#009688"/>
     <SolidColorBrush x:Key="MainColorLight" Color="#4DB6AC"/>
     <SolidColorBrush x:Key="MainColorExtraLight" Color="#80CBC4"/>

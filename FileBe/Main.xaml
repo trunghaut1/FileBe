@@ -14,7 +14,7 @@
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
                         <!-- Thay đổi style ở đây -->
-                        <ResourceDictionary Source="/FlatTheme;component/ColorStyle/LightBlue.xaml"/>
+                        <ResourceDictionary Source="/FlatTheme;component/ColorStyle/RedLight.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
                 <!-- Load tất cả các Control (không cần thay đổi) -->
@@ -230,7 +230,7 @@
                     <Label Grid.Column="1" Content="Khung tròn" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
                 </Grid>
             </Button>
-            <Button Name="btnCreaSize" Grid.Row="2" Grid.Column="1" Height="28" Margin="3 0 5 0" Click="btnCreaSize_Click" ToolTip="Tạo kích thước xung quanh theo đối tượng">
+            <Button Name="btnCreaSize" Grid.Row="2" Grid.Column="1" Height="28" Margin="3 0 5 0" Click="btnCreaSize_Click" ToolTip="Tạo kích thước xung quanh theo đối tượng&#x0a; * Chuột phải để tạo theo đơn vị cm" MouseRightButtonUp="btnCreaSize_MouseRightButtonUp">
                 <Grid Margin="-30 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -245,14 +245,70 @@
         </Grid>
         <Grid Grid.Row="6" VerticalAlignment="Bottom" Margin="0 15 0 0" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
-                <Button Style="{DynamicResource CircleButton}" Background="#0091EA" Height="22" Width="22" Margin="2 0" Tag="lightblue" Click="btnChangeTheme_Click"/>
-                <Button Style="{DynamicResource CircleButton}" Background="#607D8B" Height="22" Width="22" Margin="2 0" Tag="bluegrey" Click="btnChangeTheme_Click"/>
-                <Button Style="{DynamicResource CircleButton}" Background="#4CAF50" Height="22" Width="22" Margin="2 0" Tag="green" Click="btnChangeTheme_Click"/>
-                <Button Style="{DynamicResource CircleButton}" Background="#009688" Height="22" Width="22" Margin="2 0" Tag="mater" Click="btnChangeTheme_Click"/>
-                <Button Style="{DynamicResource CircleButton}" Background="#FF9800" Height="22" Width="22" Margin="2 0" Tag="orange" Click="btnChangeTheme_Click"/>
-                <Button Style="{DynamicResource CircleButton}" Background="#EC407A" Height="22" Width="22" Margin="2 0" Tag="pink" Click="btnChangeTheme_Click"/>
-                <Button Style="{DynamicResource CircleButton}" Background="#AB47BC" Height="22" Width="22" Margin="2 0" Tag="purple" Click="btnChangeTheme_Click"/>
-                <Button Style="{DynamicResource CircleButton}" Background="#EF5350" Height="22" Width="22" Margin="2 0" Tag="red" Click="btnChangeTheme_Click"/>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="lightblue" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#0091EA" Offset="0"/>
+                            <GradientStop Color="#00E5FF" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="bluegrey" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#455A64" Offset="0"/>
+                            <GradientStop Color="#90A4AE" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="green" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#3CD500" Offset="0"/>
+                            <GradientStop Color="#EEFF41" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="mater" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#0E5CAD" Offset="0"/>
+                            <GradientStop Color="#79F1A4" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="orange" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#FF9800" Offset="0"/>
+                            <GradientStop Color="#FCCF31" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="pink" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#EE9AE5" Offset="0"/>
+                            <GradientStop Color="#5961F9" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="purple" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#FF6FD8" Offset="0"/>
+                            <GradientStop Color="#3813C2" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button Style="{DynamicResource CircleButton}" Height="22" Width="22" Margin="2 0" Tag="red" Click="btnChangeTheme_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                            <GradientStop Color="#EF5350" Offset="0"/>
+                            <GradientStop Color="#FDD819" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
             </StackPanel>
         </Grid>
     </StackPanel>
