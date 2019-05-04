@@ -14,7 +14,7 @@
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
                         <!-- Thay đổi style ở đây -->
-                        <ResourceDictionary Source="/FlatTheme;component/ColorStyle/RedLight.xaml"/>
+                        <ResourceDictionary Source="/FlatTheme;component/ColorStyle/LightBlue.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
                 <!-- Load tất cả các Control (không cần thay đổi) -->
