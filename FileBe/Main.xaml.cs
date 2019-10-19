@@ -553,5 +553,15 @@ namespace FileBe
         {
             CreateSize(false);
         }
+
+        private void modeSelect_Checked(object sender, RoutedEventArgs e)
+        {
+            taobeGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void modeSelect_Unchecked(object sender, RoutedEventArgs e)
+        {
+            taobeGrid.Visibility = Visibility.Visible;
+        }
     }
 }

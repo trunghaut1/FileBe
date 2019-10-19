@@ -6,7 +6,7 @@
              xmlns:Converters="clr-namespace:FileBe"
              xmlns:number="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib"
              mc:Ignorable="d" 
-             Width="225" Height="670" VerticalAlignment="Top">
+             Width="225" Height="700" VerticalAlignment="Top">
     <UserControl.Resources>
         <ResourceDictionary>
             <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
@@ -23,7 +23,22 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Name="grMain">
-        <Grid>
+        <Grid Margin="0 5 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Tạo bế" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <Label Content="Tạo số bàn" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <ToggleButton Grid.Column="1" Grid.Row="0" Name="modeSelect" Checked="modeSelect_Checked" Unchecked="modeSelect_Unchecked"/>
+            <Rectangle Grid.ColumnSpan="3" Grid.Row="1" VerticalAlignment="Bottom" Stroke="{DynamicResource MainColorLight}" Margin="10 5 10 0"/>
+        </Grid>
+        <Grid Name="taobeGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>

@@ -63,7 +63,7 @@
                     <Viewbox Width="34">
                         <Grid>
                             <Rectangle x:Name="Track"
-                                       Fill="#263238" HorizontalAlignment="Left" Height="15" Margin="4.211,5,4.211,0" Stroke="{x:Null}" VerticalAlignment="Top" Width="40" RadiusY="7.5" RadiusX="7.5" Opacity="0.26"/>
+                                       Fill="{DynamicResource MainColorLight}" HorizontalAlignment="Left" Height="15" Margin="4.211,5,4.211,0" Stroke="{x:Null}" VerticalAlignment="Top" Width="40" RadiusY="7.5" RadiusX="7.5" Opacity="0.26"/>
 
                             <Grid x:Name="ThumbHolder"
                                   HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -79,7 +79,7 @@
                                     </Ellipse.RenderTransform>
                                 </Ellipse>
                                 <Ellipse x:Name="Thumb"
-                                         Fill="#FFFAFAFA" Stroke="{x:Null}" 
+                                         Fill="{DynamicResource MainColor}" Stroke="{x:Null}" 
                                          HorizontalAlignment="Center" VerticalAlignment="Center"
                                          Width="25" Height="25"
                                          Margin="0,0,0,0"
@@ -93,8 +93,7 @@
                     </Viewbox>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Thumb" Property="Fill" Value="{DynamicResource MainColor}" />
-                            <Setter TargetName="Track" Property="Fill" Value="{DynamicResource MainColorLight}" />
+                          
                             <Trigger.EnterActions>
                                 <BeginStoryboard Storyboard="{StaticResource Checked}"/>
                             </Trigger.EnterActions>
