@@ -570,6 +570,5 @@ namespace FileBe
             sobanGrid.Visibility = Visibility.Collapsed;
         }
 
-        
     }
 }

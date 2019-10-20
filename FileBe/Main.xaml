@@ -39,7 +39,7 @@
             <ToggleButton Grid.Column="1" Grid.Row="0" Name="modeSelect" Checked="modeSelect_Checked" Unchecked="modeSelect_Unchecked"/>
             <Rectangle Grid.ColumnSpan="3" Grid.Row="1" VerticalAlignment="Bottom" Stroke="{DynamicResource MainColorLight}" Margin="10 5 10 0"/>
         </Grid>
-        <Grid Name="taobeGrid" Visibility="Collapsed">
+        <Grid Name="taobeGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -199,8 +199,9 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <Grid Name="sobanGrid">
+        <Grid Name="sobanGrid" Visibility="Collapsed">
             <Grid.RowDefinitions>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -248,12 +249,13 @@
                 </Grid.ColumnDefinitions>
                 <Label Content="Từ số:" Grid.Column="0" Grid.Row="0"/>
                 <Label Content="Đến số:" Grid.Column="0" Grid.Row="1"/>
-                <CheckBox Name="chk0" Content="Thêm số 0 vào trước" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Checked="chk0_Checked"/>
+                <CheckBox Name="chk0" Content="Thêm số 0 vào trước" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
                 <number:NumericUpDown Width="100" x:Name="numFirstNum" Grid.Column="1" Grid.Row="0" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="998" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="10" IsDisplayLengthFixed="False" PreviewKeyUp="calFirstNum_PreviewKeyUp"/>
-                <number:NumericUpDown Width="100" x:Name="numLastNum" Grid.Column="1" Grid.Row="1" Value="2" MinValue="{Binding ElementName=numFirstNum, Path=Value, Converter={StaticResource LastNumConverter}}" MaxValue="999" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="10" IsDisplayLengthFixed="False" PreviewKeyUp="calLastNum_PreviewKeyUp"/>
+                <number:NumericUpDown Width="100" x:Name="numLastNum" Grid.Column="1" Grid.Row="1" Value="2" MinValue="{Binding ElementName=numFirstNum, Path=Value, Converter={StaticResource LastNumConverter}}" MaxValue="999" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="10" IsDisplayLengthFixed="False" PreviewKeyUp="calLastNum_PreviewKeyUp" PreviewKeyDown="numLastNum_PreviewKeyDown" MouseLeave="numLastNum_MouseLeave"/>
             </Grid>
             <Grid Grid.Row="2" Margin="0 0 0 5">
                 <Grid.RowDefinitions>
+                    <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -264,11 +266,13 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Label Content="Số cột:" Grid.Column="0" Grid.Row="0"/>
-                <Label Content="Khoảng cách:" Grid.Column="0" Grid.Row="1"/>
-                <Label Content="(mm)" Grid.Column="2" Grid.Row="1"/>
+                <Label Content="Khoảng cách:" Grid.Column="0" Grid.Row="2"/>
+                <Label Content="(mm)" Grid.Column="2" Grid.Row="2"/>
                 <number:NumericUpDown Width="80" x:Name="numColNum" Grid.Column="1" Grid.Row="0" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="2" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" PreviewKeyUp="calNum_PreviewKeyUp"/>
-                <number:NumericUpDown Width="80" x:Name="numSpaceNum" Grid.Column="1" Grid.Row="1" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" PreviewKeyUp="calNum_PreviewKeyUp" IsEnabled="{Binding ElementName=chkUnSpaceNum, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}"/>
-                <CheckBox Name="chkUnSpaceNum" Content="Không khoảng cách" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Center" Checked="chkUnSpaceNum_Checked" Unchecked="chkUnSpaceNum_Checked"/>
+                <number:NumericUpDown Width="80" x:Name="numSpaceNum" Grid.Column="1" Grid.Row="2" Value="1" MinValue="{Binding ElementName=MiniumValue, Path=Value}" MaxValue="500" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="8" IsDisplayLengthFixed="False" PreviewKeyUp="calNum_PreviewKeyUp" IsEnabled="{Binding ElementName=chkUnSpaceNum, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}"/>
+                <CheckBox Name="chkUnSpaceNum" Content="Không khoảng cách" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Center" Checked="chkUnSpaceNum_Checked" Unchecked="chkUnSpaceNum_Checked"/>
+                <Label Grid.Column="0" Grid.Row="1" Content="Tổng số hàng:"/>
+                <Label Grid.Column="1" Grid.Row="1" Content="0" Name="lblRowNum" HorizontalAlignment="Center"/>
             </Grid>
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
@@ -283,13 +287,12 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" Content="Tổng số hàng:"/>
+                
                 <Label Grid.Column="0" Grid.Row="1" Content="Tổng chiều ngang:"/>
                 <Label Grid.Column="0" Grid.Row="2" Content="Tổng chiều dọc:"/>
                 <Label Grid.Column="0" Grid.Row="3" Content="Tổng mét vuông:"/>
                 <Label Grid.Column="0" Grid.Row="4" Content="Tổng số tem:"/>
                 <Label Grid.Column="1" Grid.Row="1" Content="0" Name="lblWidNum"/>
-                <Label Grid.Column="1" Grid.Row="0" Content="0" Name="lblRowNum"/>
                 <Label Grid.Column="1" Grid.Row="2" Content="0" Name="lblHeiNum"/>
                 <Label Grid.Column="1" Grid.Row="3" Content="0" Name="lblTotalSizeNum"/>
                 <Label Grid.Column="1" Grid.Row="4" Content="0" Name="lblTotalNum"/>
@@ -297,6 +300,53 @@
                 <Label Grid.Column="2" Grid.Row="2" Content="cm"/>
                 <Label Grid.Column="2" Grid.Row="3" Content="m"/>
                 <Rectangle Grid.Row="0" Grid.ColumnSpan="3" VerticalAlignment="Top"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 0"/>
+            </Grid>
+            <Grid Grid.Row="4" Margin="0 0 0 8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Rectangle Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Top"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 0"/>
+                <Button Name="btnCreaNum" Grid.Row="0" Grid.ColumnSpan="2" Height="28" Margin="30 8 30 8" Click="btnCreaNum_Click" ToolTip="Tạo dãy số liên tiếp">
+                    <Grid Margin="-30 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Viewbox Width="16" Height="16" Grid.Column="0">
+                            <Path Data="M13 0c-7,0 -13,6 -13,13 0,7 6,12 13,12 7,0 12,-5 12,-12 0,-7 -5,-13 -12,-13zm-4 9l0 -2c1,0 1,0 2,-1 1,0 1,0 1,-1l3 0 0 16 -3 0 0 -12 -3 0zm4 14c-6,0 -10,-5 -10,-10 0,-6 4,-10 10,-10 5,0 10,4 10,10 0,5 -5,10 -10,10z" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" StrokeThickness="0.5"/>
+                        </Viewbox>
+                        <Label Grid.Column="1" Content="Tạo dãy số" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
+                    </Grid>
+                </Button>
+                <Button Name="btnGetOutline" Grid.Row="1" Grid.Column="0" Height="28" Margin="5 0 5 0" Click="btnGetOutline_Click" ToolTip="Xóa ảnh và số, giữ dường bế">
+                    <Grid Margin="-30 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Viewbox Width="16" Height="16" Grid.Column="0">
+                            <Path Data="M7 33c2,2 6,3 10,4l0 -4c-3,0 -6,-1 -8,-3l-2 3zm13 0l0 4c4,-1 7,-2 10,-4l-3 -3c-2,2 -4,3 -7,3zm10 -6l3 3c2,-3 3,-6 4,-10l-4 0c0,3 -1,5 -3,7l0 0zm-26 -7l-4 0c0,4 2,7 4,10l3 -3c-2,-2 -3,-4 -3,-7zm3 -11l-3 -2c-2,2 -4,6 -4,10l4 0c0,-3 1,-6 3,-8zm26 8l4 0c-1,-4 -2,-8 -4,-10l-3 2c2,2 3,5 3,8zm-3 -13c-3,-2 -6,-4 -10,-4l0 4c3,0 5,1 7,3l3 -3zm-13 0l0 -4c-4,0 -8,2 -10,4l2 3c2,-2 5,-3 8,-3z" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" StrokeThickness="0.5"/>
+                        </Viewbox>
+                        <Label Grid.Column="1" Content="Lấy viền" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
+                    </Grid>
+                </Button>
+                <Button Name="btnDelOutline" Grid.Row="1" Grid.Column="1" Height="28" Margin="5 0 5 0" Click="btnDelOutline_Click" ToolTip="Xóa đường bế, giữ ảnh và số">
+                    <Grid Margin="-30 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Viewbox Width="16" Height="16" Grid.Column="0">
+                            <Path Data="M15 0c9,0 15,7 15,15 0,9 -6,15 -15,15 -8,0 -15,-6 -15,-15 0,-8 7,-15 15,-15z" Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Stroke="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" StrokeThickness="0.5"/>
+                        </Viewbox>
+                        <Label Grid.Column="1" Content="Xóa viền" Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}"/>
+                    </Grid>
+                </Button>
             </Grid>
         </Grid>
         <Grid Grid.Row="5">
@@ -309,7 +359,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Rectangle Grid.Row="0" Grid.ColumnSpan="2"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 10"/>
+            <Rectangle Grid.Row="0" Grid.ColumnSpan="2"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 8"/>
             <Button Name="btnDelImg" Grid.Row="1" Grid.Column="0" Height="28" Click="btnDelImg_Click" Margin="5 0 5 8" ToolTip="Xóa ảnh giữ lại đường bế">
                 <Grid Margin="-30 0">
                     <Grid.ColumnDefinitions>
