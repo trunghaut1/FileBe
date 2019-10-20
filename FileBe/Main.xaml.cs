@@ -24,6 +24,10 @@ namespace FileBe
             numRow.ValueChanged += new RoutedPropertyChangedEventHandler<int>(cal_ValueChanged);
             numSpace.ValueChanged += new RoutedPropertyChangedEventHandler<int>(cal_ValueChanged);
             numInsert.ValueChanged += new RoutedPropertyChangedEventHandler<float>(numInsert_ValueChanged);
+            numFirstNum.ValueChanged += new RoutedPropertyChangedEventHandler<int>(calFistNum_ValueChanged);
+            numLastNum.ValueChanged += new RoutedPropertyChangedEventHandler<int>(calNum_ValueChanged);
+            numColNum.ValueChanged += new RoutedPropertyChangedEventHandler<int>(calNum_ValueChanged);
+            numSpaceNum.ValueChanged += new RoutedPropertyChangedEventHandler<int>(calNum_ValueChanged);
             readTheme();
             //app.Application.SelectionChange += new DIVGApplicationEvents_SelectionChangeEventHandler(SelectionChanged);
         }
@@ -557,11 +561,15 @@ namespace FileBe
         private void modeSelect_Checked(object sender, RoutedEventArgs e)
         {
             taobeGrid.Visibility = Visibility.Collapsed;
+            sobanGrid.Visibility = Visibility.Visible;
         }
 
         private void modeSelect_Unchecked(object sender, RoutedEventArgs e)
         {
             taobeGrid.Visibility = Visibility.Visible;
+            sobanGrid.Visibility = Visibility.Collapsed;
         }
+
+        
     }
 }
