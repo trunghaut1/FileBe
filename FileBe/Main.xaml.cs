@@ -12,6 +12,7 @@ namespace FileBe
     {
         Corel.Interop.CorelDRAW.Application app = null;
         string err = "Chưa chọn đối tượng!";
+        double _space = 1;
         public Main()
         {
             InitializeComponent();
@@ -30,11 +31,6 @@ namespace FileBe
             numSpaceNum.ValueChanged += new RoutedPropertyChangedEventHandler<int>(calNum_ValueChanged);
             readTheme();
             //app.Application.SelectionChange += new DIVGApplicationEvents_SelectionChangeEventHandler(SelectionChanged);
-        }
-
-        private void SelectionChanged()
-        {
-            //MessageBox.Show("a");
         }
         private void ChangeTheme(string theme)
         {
@@ -55,19 +51,24 @@ namespace FileBe
             lblTotalSize.Content = "0";
             lblTotal.Content = "0";
             numInsert.Value = 0;
+            _space = 1;
+        }
+        private bool checkActive()
+        {
+            if (app?.ActiveDocument == null || app.ActiveSelectionRange.Count < 1) return true;
+            return false;
         }
         // Tính và hiển thị thông tin file bế
         private void calSize()
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1) return;
+            if (checkActive()) return;
             app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
             Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
             try
             {
-                float space = spaceCal();
-                double wid = ((s.x + space) * numCol.Value) - space;
-                double hei = ((s.y + space) * numRow.Value) - space;
+                spaceCal();
+                double wid = ((s.x + _space) * numCol.Value) - _space;
+                double hei = ((s.y + _space) * numRow.Value) - _space;
                 lblWid.Content = string.Format("{0:#,##0.###}", wid);
                 lblHei.Content = string.Format("{0:#,##0.###}", hei);
                 lblTotalSize.Content = string.Format("{0:#,##0.###}", ((wid * hei) / 10000));
@@ -78,10 +79,12 @@ namespace FileBe
                 MessageBox.Show(ex.Message + "\n" + ex.Source,"Lỗi");
             }
         }
-        private float spaceCal()
+        private void spaceCal()
         {
-            if (chkUnSpace.IsChecked.Value) return 0;
-            return (float)numSpace.Value / 10;
+            if (chkUnSpace.IsChecked.Value)
+                _space = 0;
+            else
+                _space = (double)numSpace.Value / 10;
         }
 
         private void chkUnSpace_Checked(object sender, RoutedEventArgs e)
@@ -91,13 +94,12 @@ namespace FileBe
 
         private void btnReCal_Click(object sender, RoutedEventArgs e)
         {
-            calSize();
+            
         }
 
         private void btnCreate_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
@@ -107,17 +109,16 @@ namespace FileBe
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
                 double space = 0;
-                float sp = spaceCal();
                 for (int i = 1; i < numRow.Value; i++)
                 {
-                    space += s.y + sp;
+                    space += s.y + _space;
                     orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
                 }
                 orSh.CreateSelection();
                 space = 0;
                 for (int j = 1; j < numCol.Value; j++)
                 {
-                    space += s.x + sp;
+                    space += s.x + _space;
                     orSh.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
                 }
                 orSh.Group();
@@ -131,8 +132,7 @@ namespace FileBe
 
         private void btnCrLine_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
@@ -171,8 +171,7 @@ namespace FileBe
 
         private void btnCrSemiLine_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
@@ -217,8 +216,7 @@ namespace FileBe
 
         private void btnDelImg_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
@@ -249,12 +247,15 @@ namespace FileBe
         }
         private float calSizeInsert()
         {
-            if (app?.ActiveSelectionRange == null) return 0;
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi");
+                return 0;
+            }
             try
             {
                 app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
                 ShapeRange orSh = app.ActiveSelectionRange;
-                if (orSh.Count < 1) return 0;
                 double sRec = orSh.SizeHeight * orSh.SizeWidth;
                 double sEll = Math.Pow(orSh.SizeWidth / 2, 2) * Math.PI;
                 double d = Math.Sqrt(((sRec - sEll) / 1.5775796) / Math.PI) * 2;
@@ -288,8 +289,7 @@ namespace FileBe
 
         private void btnCreInsert_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
@@ -311,23 +311,24 @@ namespace FileBe
                 double size = numInsert.Value;
                 if (size == 0) return;
                 double space = 0;
+                spaceCal();
                 ShapeRange insert = app.ActiveSelectionRange.Duplicate(0, 0);
                 app.ActiveDocument.ReferencePoint = cdrReferencePoint.cdrBottomRight;
                 insert.SizeHeight = size;
                 insert.SizeWidth = size;
                 app.ActiveDocument.ReferencePoint = cdrReferencePoint.cdrTopLeft;
-                double move = (size / 2) + (spaceCal() / 2);
+                double move = (size / 2) + (_space / 2);
                 insert.Move(move, -move);
                 for (int i = 1; i < numRow.Value; i++)
                 {
-                    space += s.y + spaceCal();
+                    space += s.y + _space;
                     orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
                 }
                 orSh.CreateSelection();
                 space = 0;
                 for (int j = 1; j < numCol.Value; j++)
                 {
-                    space += s.x + spaceCal();
+                    space += s.x + _space;
                     orSh.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
                 }
                 space = 0;
@@ -335,14 +336,14 @@ namespace FileBe
                 ShapeRange insertRange = insert;
                 for (int ii = 1; ii < numRow.Value - 1; ii++)
                 {
-                    space += s.y + spaceCal();
+                    space += s.y + _space;
                     insertRange.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
                 }
                 space = 0;
                 insertRange.CreateSelection();
                 for (int jj = 1; jj < numCol.Value - 1; jj++)
                 {
-                    space += s.x + spaceCal();
+                    space += s.x + _space;
                     insertRange.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
                 }
                 orSh.AddRange(insertRange);
@@ -390,9 +391,9 @@ namespace FileBe
                         ChangeTheme(theme);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                //MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
         }
         private void writeTheme(string theme)
@@ -459,8 +460,7 @@ namespace FileBe
 
         private void btnCreaRec_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
@@ -478,8 +478,7 @@ namespace FileBe
 
         private void btnCreaEll_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
@@ -496,8 +495,7 @@ namespace FileBe
         }
         private void CreateSize(bool isMeter)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi");
                 return;
