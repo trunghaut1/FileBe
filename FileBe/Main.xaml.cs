@@ -13,6 +13,7 @@ namespace FileBe
         Corel.Interop.CorelDRAW.Application app = null;
         string err = "Chưa chọn đối tượng!";
         double _space = 1;
+        Size _size = new Size(0, 0);
         public Main()
         {
             InitializeComponent();
@@ -52,6 +53,8 @@ namespace FileBe
             lblTotal.Content = "0";
             numInsert.Value = 0;
             _space = 1;
+            _size.x = 0;
+            _size.y = 0;
         }
         private bool checkActive()
         {
@@ -63,6 +66,7 @@ namespace FileBe
         {
             if (checkActive()) return;
             app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+            autoRound();
             Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
             try
             {
@@ -92,20 +96,16 @@ namespace FileBe
             calSize();
         }
 
-        private void btnReCal_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private void btnCreate_Click(object sender, RoutedEventArgs e)
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi",MessageBoxButton.OK,MessageBoxImage.Error);
                 return;
             }
             try
             {
+                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
                 double space = 0;
@@ -134,11 +134,12 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
             {
+                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = null;
                 Size position = new Size(app.ActiveSelectionRange.PositionX, app.ActiveSelectionRange.PositionY);
@@ -173,11 +174,12 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
             {
+                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
                 Shape sh = app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
@@ -218,21 +220,31 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
             {
                 ShapeRange orSh = app.ActiveSelectionRange;
                 ShapeRange img = new ShapeRange();
+                ShapeRange unColor = new ShapeRange();
                 orSh.UngroupAll();
                 foreach(Shape sh in orSh)
                 {
                     if (sh.Type == cdrShapeType.cdrBitmapShape)
                         img.Add(sh);
+                    else
+                        if (sh.Fill.Type == cdrFillType.cdrNoFill && sh.Outline.Type == cdrOutlineType.cdrNoOutline)
+                            unColor.Add(sh);
                 }
                 //MessageBox.Show(img.Count.ToString());
                 img.Delete();
+                if(unColor.Count > 0)
+                {
+                    MessageBoxResult result = MessageBox.Show("Phát hiện viền bế ẩn, bạn có muốn tự động xóa?", "Cảnh báo!", MessageBoxButton.YesNo,MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.Yes)
+                        unColor.Delete();
+                }
             }
             catch (Exception ex)
             {
@@ -249,12 +261,13 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return 0;
             }
             try
             {
                 app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+                autoRound();
                 ShapeRange orSh = app.ActiveSelectionRange;
                 double sRec = orSh.SizeHeight * orSh.SizeWidth;
                 double sEll = Math.Pow(orSh.SizeWidth / 2, 2) * Math.PI;
@@ -291,12 +304,13 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
             {
                 app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
                 if (orSh.Shapes[1].Type == cdrShapeType.cdrBitmapShape && orSh.Count == 1)
@@ -462,7 +476,7 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
@@ -480,7 +494,7 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
@@ -497,7 +511,7 @@ namespace FileBe
         {
             if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
@@ -568,5 +582,133 @@ namespace FileBe
             sobanGrid.Visibility = Visibility.Collapsed;
         }
 
+        private void btn1mSpace_Click(object sender, RoutedEventArgs e)
+        {
+            chkUnSpace.IsChecked = false;
+            autoCal();
+        }
+
+        private void btn1m_Click(object sender, RoutedEventArgs e)
+        {
+            chkUnSpace.IsChecked = true;
+            autoCal();
+        }
+        private void autoCal()
+        {
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            try
+            {
+                app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+                Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
+                int col = 0, row = 0;
+                double w = 0, h = 0;
+                if (chkUnSpace.IsChecked.Value)
+                {
+                    col = (int)(120.5 / s.x);
+                    w = s.x * col;
+                    row = (int)((10000 / w) / s.y);
+                    h = row * s.y;
+                    if (w * (row * s.y) < 9400)
+                        row++;
+                    else
+                        if ((w * h) > 9400 && (w * h) < 9750)
+                        if (w * (h + s.y) < 10100)
+                            row++;
+                }
+                else
+                {
+                    col = (int)(120.5 / (s.x + 0.15));
+                    w = (s.x + 0.1) * col - 0.1;
+                    row = (int)((10000 / w) / (s.y + 0.15));
+                    h = row * (s.y + 0.1) - 0.1;
+                    if (w * h < 9400)
+                        row++;
+                    else
+                        if ((w * h) > 9400 && (w * h) < 9700)
+                        if (w * (h + s.y + 0.1) < 10100)
+                            row++;
+
+                }
+                numCol.Value = col;
+                numRow.Value = row;
+                calSize();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+        }
+        private void autoRound()
+        {
+            Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
+            if(s.x != _size.x || s.y != _size.y)
+            {
+                _size.x = Math.Round(s.x, 1);
+                _size.y = Math.Round(s.y, 1);
+                app.ActiveSelection.SizeWidth = _size.x;
+                app.ActiveSelection.SizeHeight = _size.y;                
+            }
+        }
+
+        private void btnCrLineColor_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            try
+            {
+                autoRound();
+                Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
+                ShapeRange rowRange = app.ActiveSelectionRange;
+                ShapeRange colRev = app.ActiveSelectionRange;
+                ShapeRange rowRev = app.ActiveSelectionRange;
+                colRev.RemoveAll();
+                rowRev.RemoveAll();
+                rowRange.RemoveAll();
+                Size position = new Size(app.ActiveSelectionRange.PositionX, app.ActiveSelectionRange.PositionY);
+                Size size = new Size(s.x * numCol.Value, s.y * numRow.Value);
+                app.ActiveSelection.Delete();
+                Shape shapeCol = app.ActiveLayer.CreateLineSegment(position.x, position.y, position.x, position.y - size.y);
+                shapeCol.Outline.Color.CMYKAssign(100, 0, 100, 0);
+                double space = 0;
+                for (int i = 0; i < numCol.Value; i++)
+                {
+                    space += s.x;
+                    if (i % 2 == 0 || i == numCol.Value - 1)
+                        colRev.Add(shapeCol.Duplicate(space, 0));
+                    else
+                        shapeCol.Duplicate(space, 0);
+                }
+                shapeCol.OrderToFront();
+                colRev.Flip(cdrFlipAxes.cdrFlipVertical);
+                space = 0;
+                Shape shapeRow = app.ActiveLayer.CreateLineSegment(position.x, position.y, position.x + size.x, position.y);
+                shapeRow.Outline.Color.CMYKAssign(0, 100, 100, 0);
+                rowRev.Add(shapeRow);
+                for (int j = 0; j < numRow.Value; j++)
+                {
+                    space += s.y;
+                    if (j % 2 != 0 || j == numRow.Value - 1)
+                        rowRev.Add(shapeRow.Duplicate(0, -space));
+                    else
+                        rowRange.Add(shapeRow.Duplicate(0, -space));
+                }
+                shapeRow.OrderToFront();
+                rowRange.AddRange(rowRev);
+                rowRange.OrderReverse();
+                rowRev.Flip(cdrFlipAxes.cdrFlipHorizontal);
+                app.ActiveLayer.CreateRectangle2(position.x, position.y - size.y, size.x, size.y).CreateSelection();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+        }
     }
 }
