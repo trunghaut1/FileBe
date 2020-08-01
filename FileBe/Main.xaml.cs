@@ -1,6 +1,7 @@
 ﻿using Corel.Interop.VGCore;
 using NumericUpDownLib;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -709,6 +710,15 @@ namespace FileBe
             {
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
+        }
+
+        private void btnLogo_Click(object sender, RoutedEventArgs e)
+        {
+            var random = new Random();
+            var list = new List<string> { "LightBlue", "BlueGrey", "GreenLight", "MaterialLight", "OrangeLight", "PinkLight", "PurpleLight", "RedLight" };
+            int index = random.Next(list.Count);
+            ChangeTheme(list[index]);
+            writeTheme(list[index]);
         }
     }
 }
