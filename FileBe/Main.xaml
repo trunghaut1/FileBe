@@ -128,7 +128,7 @@
                 <ToggleButton Grid.Column="1" Grid.Row="0" x:Name="modeSelect" Checked="modeSelect_Checked" Unchecked="modeSelect_Unchecked"/>
                 <Rectangle Grid.ColumnSpan="3" Grid.Row="1" VerticalAlignment="Bottom" Stroke="{DynamicResource MainColorLight}" Margin="10 2 10 0"/>
             </Grid>
-            <Grid x:Name="taobeGrid">
+            <Grid x:Name="taobeGrid" Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -295,8 +295,9 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-            <Grid x:Name="sobanGrid" Visibility="Collapsed">
+            <Grid x:Name="sobanGrid" >
                 <Grid.RowDefinitions>
+                    <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -308,7 +309,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnResetNum" Grid.Column="0" Margin="5 10" Height="28" Click="btnResetNum_Click" ToolTip="Khôi phục thông số về ban đầu">
+                    <Button x:Name="btnResetNum" Grid.Column="0" Grid.ColumnSpan="2" Margin="20 5 20 6" Height="28" Click="btnResetNum_Click" ToolTip="Khôi phục thông số về ban đầu">
                         <Grid Margin="-15 0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -320,20 +321,35 @@
                             <Label Grid.Column="1" Content="Khôi phục" Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"/>
                         </Grid>
                     </Button>
-                    <Button x:Name="btnReCalNum" Grid.Column="1" Height="28" Margin="5 10" Click="btnReCalNum_Click" ToolTip="Tính toán lại thông số file bế">
-                        <Grid Margin="-15 0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Viewbox Width="16" Height="16" Grid.Column="0">
-                                <Path Data="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z" Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Stroke="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" StrokeThickness="0.5"/>
-                            </Viewbox>
-                            <Label Grid.Column="1" Content="Ước tính" Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"/>
-                        </Grid>
-                    </Button>
+                    <Rectangle Grid.Row="0" Grid.ColumnSpan="3" VerticalAlignment="Bottom"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 0"/>
                 </Grid>
                 <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.ColumnSpan="2" Grid.Row="0" Text="Số gốc đang chọn hiện tại:" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+                    <TextBox Name="txtTextName" Grid.Row="1" Grid.Column="0" Margin="5 0 0 0"/>
+                    <Button Name="btnAutoText" Grid.Row="1" Grid.Column="1" Content="Tự động" Height="28" Margin="10 0 5 0" />
+                    <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.4*" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="1.2*" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Thêm trước:" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                        <TextBox Name="txtTextFirst"  Grid.Column="1" Margin="0 0 0 0" Tag="(trống)" Width="40"/>
+                        <TextBlock Grid.Column="2" Text="Thêm sau:" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                        <TextBox Name="txtTextLast" Grid.Column="3" Margin="0 0 5 0" Tag="(trống)" Width="40"/>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="2" Margin="0 4 0 0">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -349,7 +365,7 @@
                     <number:NumericUpDown Width="100" x:Name="numFirstNum" Grid.Column="1" Grid.Row="0" Value="1" MinValue="{Binding Value, ElementName=MiniumValue}" MaxValue="998" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="10" IsDisplayLengthFixed="False" PreviewKeyUp="calFirstNum_PreviewKeyUp"/>
                     <number:NumericUpDown Width="100" x:Name="numLastNum" Grid.Column="1" Grid.Row="1" Value="2" MinValue="{Binding Value, Converter={StaticResource LastNumConverter}, ElementName=numFirstNum}" MaxValue="999" Margin="0 3" NumberStyle="Integer" IsReadOnly="False" IsMouseDragEnabled="False" DisplayLength="10" IsDisplayLengthFixed="False" PreviewKeyUp="calLastNum_PreviewKeyUp" PreviewKeyDown="numLastNum_PreviewKeyDown" MouseLeave="numLastNum_MouseLeave"/>
                 </Grid>
-                <Grid Grid.Row="2" Margin="0 0 0 5">
+                <Grid Grid.Row="3" Margin="0 5 0 5">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -369,8 +385,9 @@
                     <CheckBox x:Name="chkUnSpaceNum" Content="Không khoảng cách" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Center" Checked="chkUnSpaceNum_Checked" Unchecked="chkUnSpaceNum_Checked"/>
                     <Label Grid.Column="0" Grid.Row="1" Content="Tổng số hàng:"/>
                     <Label Grid.Column="1" Grid.Row="1" Content="0" x:Name="lblRowNum" HorizontalAlignment="Center"/>
+                    <Rectangle Grid.Row="0" Grid.ColumnSpan="3" VerticalAlignment="Top"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 0"/>
                 </Grid>
-                <Grid Grid.Row="3">
+                <Grid Grid.Row="4">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -397,7 +414,7 @@
                     <Label Grid.Column="2" Grid.Row="3" Content="m"/>
                     <Rectangle Grid.Row="0" Grid.ColumnSpan="3" VerticalAlignment="Top"  Stroke="{DynamicResource MainColorLight}" Margin="10 0 10 0"/>
                 </Grid>
-                <Grid Grid.Row="4" Margin="0 0 0 8">
+                <Grid Grid.Row="5" Margin="0 0 0 8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>

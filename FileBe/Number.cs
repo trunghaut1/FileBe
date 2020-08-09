@@ -168,6 +168,23 @@ namespace FileBe
             //calMaxCol();
             calNum();
         }
+        private void btnCreaNum_Click2(object sender, RoutedEventArgs e)
+        {
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            int bitmap = 0, text = 0, rec = 0, temp = 0;
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+        }
         private void btnCreaNum_Click(object sender, RoutedEventArgs e)
         {
             int bitmap = 0, text = 0, rec = 0, temp = 0;
