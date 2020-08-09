@@ -128,7 +128,7 @@
                 <ToggleButton Grid.Column="1" Grid.Row="0" x:Name="modeSelect" Checked="modeSelect_Checked" Unchecked="modeSelect_Unchecked"/>
                 <Rectangle Grid.ColumnSpan="3" Grid.Row="1" VerticalAlignment="Bottom" Stroke="{DynamicResource MainColorLight}" Margin="10 2 10 0"/>
             </Grid>
-            <Grid x:Name="taobeGrid" Visibility="Collapsed">
+            <Grid x:Name="taobeGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -295,7 +295,7 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-            <Grid x:Name="sobanGrid" >
+            <Grid x:Name="sobanGrid" Visibility="Collapsed" >
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
