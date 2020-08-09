@@ -720,5 +720,7 @@ namespace FileBe
             ChangeTheme(list[index]);
             writeTheme(list[index]);
         }
+
+        
     }
 }

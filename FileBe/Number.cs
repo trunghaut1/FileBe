@@ -18,7 +18,6 @@ namespace FileBe
             numLastNum.Value = 2;
             numSpaceNum.Value = 1;
             chkUnSpaceNum.IsChecked = false;
-            chk0.IsChecked = false;
             numColNum.Value = 1;
             numSpaceNum.Value = 1;
             lblRowNum.Content = "0";
@@ -26,20 +25,80 @@ namespace FileBe
             lblTotalNum.Content = "0";
             lblTotalSizeNum.Content = "0";
             lblWidNum.Content = "0";
+            txtTextName.Text = "";
+            txtTextFirst.Text = "";
+            txtTextLast.Text = "";
+            chk00.IsChecked = false;
+            chkAuto.IsChecked = true;
+            num0.Value = 1;
+            try
+            {
+                txtTextName.SetResourceReference(System.Windows.Controls.Control.BorderBrushProperty, "MainColor");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
         }
-        private void btnReCalNum_Click(object sender, RoutedEventArgs e)
+        private void txtTextName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            calNum();
+            try
+            {
+                if(string.IsNullOrWhiteSpace(txtTextName.Text))
+                    txtTextName.SetResourceReference(System.Windows.Controls.Control.BorderBrushProperty, "ErrorColor");
+                else
+                    txtTextName.SetResourceReference(System.Windows.Controls.Control.BorderBrushProperty, "MainColor");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+            
+        }
+        private void btnAutoText_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            try
+            {
+                ShapeRange orSh = app.ActiveSelectionRange;
+                double x = 0, y = 0;
+                bool flag = false;
+                if (orSh.Shapes.Count == 1 && orSh.Shapes.First.Type == cdrShapeType.cdrGroupShape)
+                    orSh.Ungroup();
+                foreach (Shape s in orSh.Shapes)
+                {
+                    if(s.Type == cdrShapeType.cdrTextShape)
+                    {
+                        txtTextName.Text = s.Text.Contents;
+                        x = s.PositionX;
+                        y = s.PositionY;
+                        s.Text.AlignProperties.Alignment = cdrAlignment.cdrCenterAlignment;
+                        s.PositionX = x;
+                        s.PositionY = y;
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag)
+                    MessageBox.Show("Không tìm thấy đối tượng dạng Text!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
         }
         private void calNum()
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1) return;
+            if (checkActive()) return;
             app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
             Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
             try
             {
-                float space = spaceCalNum();
+                double space = spaceCalNum();
                 double row = (numLastNum.Value - numFirstNum.Value + 1.0) / numColNum.Value;
                 int realRow = (int)Math.Ceiling(row);
                 double wid = ((s.x + space) * numColNum.Value) - space;
@@ -55,10 +114,10 @@ namespace FileBe
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
         }
-        private float spaceCalNum()
+        private double spaceCalNum()
         {
             if (chkUnSpaceNum.IsChecked.Value) return 0;
-            return (float)numSpaceNum.Value / 10;
+            return (double)numSpaceNum.Value / 10;
         }
         private void calMaxCol()
         {
@@ -168,53 +227,52 @@ namespace FileBe
             //calMaxCol();
             calNum();
         }
-        private void btnCreaNum_Click2(object sender, RoutedEventArgs e)
+        private void btnCreaNum_Click(object sender, RoutedEventArgs e)
         {
             if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            int bitmap = 0, text = 0, rec = 0, temp = 0;
             try
             {
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
-            }
-        }
-        private void btnCreaNum_Click(object sender, RoutedEventArgs e)
-        {
-            int bitmap = 0, text = 0, rec = 0, temp = 0;
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
-            {
-                MessageBox.Show(err, "Lỗi");
-                return;
-            }
-            try
-            {
-                Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
-                ShapeRange orSh = app.ActiveSelectionRange;
-                double space = 0;
-                float p = spaceCalNum();
-                orSh.Group().CreateSelection();
-                orSh = app.ActiveSelectionRange;
-                foreach (Shape sp in orSh.Shapes[1].Shapes)
+                if(string.IsNullOrWhiteSpace(txtTextName.Text))
                 {
-                    temp++;
-                    if (sp.Type == cdrShapeType.cdrBitmapShape)
-                    {
-                        bitmap = temp;
-                    }
-                    else if (sp.Type == cdrShapeType.cdrTextShape)
-                    {
-                        text = temp;
-                    }
-                    else rec = temp;
+                    txtTextName.SetResourceReference(System.Windows.Controls.Control.BorderBrushProperty, "ErrorColor");
+                    MessageBox.Show("Không được để trống phần số gốc đang chọn!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
+                ShapeRange orSh = app.ActiveSelectionRange;
+                bool flag = false;
+                double x = 0, y = 0;
+                if (orSh.Shapes.Count == 1 && orSh.Shapes.First.Type == cdrShapeType.cdrGroupShape)
+                    orSh.Ungroup();
+                foreach (Shape ss in orSh.Shapes)
+                {
+                    if (ss.Type == cdrShapeType.cdrTextShape)
+                    {
+                        if(ss.Text.Contents == txtTextName.Text)
+                        {
+                            x = ss.PositionX;
+                            y = ss.PositionY;
+                            ss.Text.AlignProperties.Alignment = cdrAlignment.cdrCenterAlignment;
+                            ss.PositionX = x;
+                            ss.PositionY = y;
+                            flag = true;
+                            ss.Name = "txtName";
+                            break;
+                        }   
+                    }
+                }
+                if (!flag)
+                {
+                    MessageBox.Show("Không tìm thấy Text có nội dung '"+txtTextName.Text+"'!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                orSh.Group().CreateSelection();
+                Size s = new Size(orSh.SizeWidth, orSh.SizeHeight);
+                double space = 0;
+                double p = spaceCalNum();
                 orSh = app.ActiveSelectionRange;
                 for (int j = 1; j < numColNum.Value; j++)
                 {
@@ -228,10 +286,10 @@ namespace FileBe
                     space += s.y + p;
                     orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
                 }
-                if(Convert.ToInt32(lblTotalNum.Content) < Convert.ToInt32(lblRowNum.Content) * numColNum.Value)
+                if (Convert.ToInt32(lblTotalNum.Content) < Convert.ToInt32(lblRowNum.Content) * numColNum.Value)
                 {
                     ShapeRange remove = new ShapeRange();
-                    for(int i = Convert.ToInt32(lblTotalNum.Content) + 1; i <= Convert.ToInt32(lblRowNum.Content) * numColNum.Value; i++)
+                    for (int i = Convert.ToInt32(lblTotalNum.Content) + 1; i <= Convert.ToInt32(lblRowNum.Content) * numColNum.Value; i++)
                     {
                         remove.Add(orSh.Shapes[i]);
                     }
@@ -243,13 +301,20 @@ namespace FileBe
                 int lenght = numLastNum.Value.ToString().Length;
                 foreach (Shape sp in orSh)
                 {
-                    if((bool)chk0.IsChecked)
-                        sp.Shapes[text].Text.Contents = count.ToString().PadLeft(lenght, '0');
+                    if (chk00.IsChecked.Value)
+                    {
+                        if(chkAuto.IsChecked.Value)
+                            sp.Shapes["txtName"].Text.Contents = txtTextFirst.Text + count.ToString().PadLeft(lenght, '0') + txtTextLast.Text;
+                        else
+                        {
+                            string num0String = new string('0', num0.Value);
+                            sp.Shapes["txtName"].Text.Contents = txtTextFirst.Text + num0String + count.ToString() + txtTextLast.Text;
+                        }
+                    }  
                     else
-                        sp.Shapes[text].Text.Contents = count.ToString();
+                        sp.Shapes["txtName"].Text.Contents = txtTextFirst.Text + count.ToString() + txtTextLast.Text;
                     count++;
                 }
-                //MessageBox.Show("bit: " + bitmap.ToString() + "- text: " + text.ToString() + "- rec: " + rec.ToString());
             }
             catch (Exception ex)
             {
@@ -258,23 +323,35 @@ namespace FileBe
         }
         private void btnGetOutline_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
             {
                 ShapeRange orSh = app.ActiveSelectionRange;
                 ShapeRange img = new ShapeRange();
-                orSh.UngroupAll();
+                orSh.Ungroup();
+                Color black = new Color();
+                black.CMYKAssign(0, 0, 0, 100);
                 foreach (Shape sh in orSh)
                 {
-                    if (sh.Type == cdrShapeType.cdrBitmapShape || sh.Type == cdrShapeType.cdrTextShape)
+                    if (sh.Type == cdrShapeType.cdrCurveShape || sh.Type == cdrShapeType.cdrEllipseShape || sh.Type == cdrShapeType.cdrPolygonShape
+                        || sh.Type == cdrShapeType.cdrRectangleShape || sh.Type == cdrShapeType.cdrPerfectShape || sh.Type == cdrShapeType.cdrCustomShape)
+                    {
+                        if(sh.Fill.Type != cdrFillType.cdrNoFill)
+                            img.Add(sh);
+                        else
+                            if(sh.Outline.Type == cdrOutlineType.cdrNoOutline)
+                                img.Add(sh);
+                            else
+                                if(!sh.Outline.Color.IsSame(black))
+                                    img.Add(sh);
+                    }
+                    else
                         img.Add(sh);
                 }
-                //MessageBox.Show(img.Count.ToString());
                 img.Delete();
             }
             catch (Exception ex)
@@ -285,23 +362,28 @@ namespace FileBe
 
         private void btnDelOutline_Click(object sender, RoutedEventArgs e)
         {
-            if (app?.ActiveDocument == null) return;
-            if (app.ActiveSelectionRange.Count < 1)
+            if (checkActive())
             {
-                MessageBox.Show(err, "Lỗi");
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             try
             {
                 ShapeRange orSh = app.ActiveSelectionRange;
                 ShapeRange img = new ShapeRange();
-                orSh.UngroupAll();
+                orSh.Ungroup();
+                Color black = new Color();
+                black.CMYKAssign(0, 0, 0, 100);
                 foreach (Shape sh in orSh)
                 {
-                    if (sh.Type != cdrShapeType.cdrBitmapShape && sh.Type != cdrShapeType.cdrTextShape)
-                        img.Add(sh);
+                    if (sh.Type == cdrShapeType.cdrCurveShape || sh.Type == cdrShapeType.cdrEllipseShape || sh.Type == cdrShapeType.cdrPolygonShape
+                        || sh.Type == cdrShapeType.cdrRectangleShape || sh.Type == cdrShapeType.cdrPerfectShape || sh.Type == cdrShapeType.cdrCustomShape)
+                    {
+                        if (sh.Outline.Type != cdrOutlineType.cdrNoOutline && sh.Fill.Type == cdrFillType.cdrNoFill)
+                            if(sh.Outline.Color.IsSame(black))
+                                img.Add(sh);
+                    }
                 }
-                //MessageBox.Show(img.Count.ToString());
                 img.Delete();
             }
             catch (Exception ex)
