@@ -721,6 +721,19 @@ namespace FileBe
             writeTheme(list[index]);
         }
 
-        
+        private void btnAutoCircle_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAutoDef_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAutoLine_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

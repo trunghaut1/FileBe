@@ -243,8 +243,10 @@ namespace FileBe
                     return;
                 }
                 ShapeRange orSh = app.ActiveSelectionRange;
-                bool flag = false;
+                bool flag = false, outline = false, find = false;
                 double x = 0, y = 0;
+                Color black = new Color();
+                black.CMYKAssign(0, 0, 0, 100);
                 if (orSh.Shapes.Count == 1 && orSh.Shapes.First.Type == cdrShapeType.cdrGroupShape)
                     orSh.Ungroup();
                 foreach (Shape ss in orSh.Shapes)
@@ -260,9 +262,29 @@ namespace FileBe
                             ss.PositionY = y;
                             flag = true;
                             ss.Name = "txtName";
-                            break;
                         }   
                     }
+                    if(!outline)
+                    {
+                        if (ss.Type == cdrShapeType.cdrCurveShape || ss.Type == cdrShapeType.cdrEllipseShape || ss.Type == cdrShapeType.cdrPolygonShape
+                        || ss.Type == cdrShapeType.cdrRectangleShape || ss.Type == cdrShapeType.cdrPerfectShape || ss.Type == cdrShapeType.cdrCustomShape)
+                        {
+                            if (ss.Fill.Type == cdrFillType.cdrNoFill && ss.Outline.Type != cdrOutlineType.cdrNoOutline)
+                            {
+                                if(!find)
+                                {
+                                    ss.Name = "txtOutline";
+                                    find = true;
+                                }
+                                if(ss.Outline.Color.IsSame(black))
+                                {
+                                    ss.Name = "txtOutline";
+                                    outline = true;
+                                }
+                            }
+                        }
+                    }
+                    
                 }
                 if (!flag)
                 {
@@ -332,24 +354,10 @@ namespace FileBe
             {
                 ShapeRange orSh = app.ActiveSelectionRange;
                 ShapeRange img = new ShapeRange();
-                orSh.Ungroup();
-                Color black = new Color();
-                black.CMYKAssign(0, 0, 0, 100);
+                orSh.UngroupAll();
                 foreach (Shape sh in orSh)
                 {
-                    if (sh.Type == cdrShapeType.cdrCurveShape || sh.Type == cdrShapeType.cdrEllipseShape || sh.Type == cdrShapeType.cdrPolygonShape
-                        || sh.Type == cdrShapeType.cdrRectangleShape || sh.Type == cdrShapeType.cdrPerfectShape || sh.Type == cdrShapeType.cdrCustomShape)
-                    {
-                        if(sh.Fill.Type != cdrFillType.cdrNoFill)
-                            img.Add(sh);
-                        else
-                            if(sh.Outline.Type == cdrOutlineType.cdrNoOutline)
-                                img.Add(sh);
-                            else
-                                if(!sh.Outline.Color.IsSame(black))
-                                    img.Add(sh);
-                    }
-                    else
+                    if (sh.Name != "txtOutline")
                         img.Add(sh);
                 }
                 img.Delete();
@@ -371,18 +379,11 @@ namespace FileBe
             {
                 ShapeRange orSh = app.ActiveSelectionRange;
                 ShapeRange img = new ShapeRange();
-                orSh.Ungroup();
-                Color black = new Color();
-                black.CMYKAssign(0, 0, 0, 100);
+                orSh.UngroupAll();
                 foreach (Shape sh in orSh)
                 {
-                    if (sh.Type == cdrShapeType.cdrCurveShape || sh.Type == cdrShapeType.cdrEllipseShape || sh.Type == cdrShapeType.cdrPolygonShape
-                        || sh.Type == cdrShapeType.cdrRectangleShape || sh.Type == cdrShapeType.cdrPerfectShape || sh.Type == cdrShapeType.cdrCustomShape)
-                    {
-                        if (sh.Outline.Type != cdrOutlineType.cdrNoOutline && sh.Fill.Type == cdrFillType.cdrNoFill)
-                            if(sh.Outline.Color.IsSame(black))
-                                img.Add(sh);
-                    }
+                    if (sh.Name == "txtOutline")
+                        img.Add(sh);
                 }
                 img.Delete();
             }
