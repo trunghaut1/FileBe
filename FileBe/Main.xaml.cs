@@ -738,7 +738,7 @@ namespace FileBe
                             return true;
                         else
                         {
-                            orSh.Add(orSh.Shapes.First.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, true, 700, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
+                            orSh.Add(orSh.Shapes.First.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, false, 720, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
                             orSh.SizeWidth = size.x;
                             orSh.SizeHeight = size.y;
                             if(type == "circle")
@@ -760,7 +760,7 @@ namespace FileBe
                     {
                         orSh.Group().CreateSelection();
                         orSh = app.ActiveSelectionRange;
-                        orSh.Add(orSh.FirstShape.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, true, 700, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
+                        orSh.Add(orSh.FirstShape.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, false, 720, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
                         orSh.SizeWidth = size.x;
                         orSh.SizeHeight = size.y;
                         if (type == "circle")
