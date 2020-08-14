@@ -140,33 +140,37 @@ namespace FileBe
             try
             {
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
-                ShapeRange orSh = null;
                 Size position = new Size(app.ActiveSelectionRange.PositionX, app.ActiveSelectionRange.PositionY);
                 Size size = new Size(s.x * numCol.Value, s.y * numRow.Value);
                 app.ActiveSelection.Delete();
-                app.ActiveLayer.CreateLineSegment(position.x,position.y, position.x, position.y - size.y).CreateSelection();
-                orSh = app.ActiveSelectionRange;
-                double space = 0;
-                for (int i = 0; i < numCol.Value; i++)
-                {
-                    space += s.x;
-                    orSh.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
-                }
-                space = 0;
-                app.ActiveLayer.CreateLineSegment(position.x, position.y, position.x + size.x, position.y).CreateSelection();
-                orSh.AddRange(app.ActiveSelectionRange);
-                for (int j = 0; j < numRow.Value; j++)
-                {
-                    space += s.y;
-                    orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
-                }
-                orSh.Group();
+                ShapeRange orSh = CrLine(s, position, size);
                 app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY).CreateSelection();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
+        }
+        private ShapeRange CrLine(Size s, Size position, Size size)
+        {
+            app.ActiveLayer.CreateLineSegment(position.x, position.y, position.x, position.y - size.y).CreateSelection();
+            ShapeRange orSh = app.ActiveSelectionRange;
+            double space = 0;
+            for (int i = 0; i < numCol.Value; i++)
+            {
+                space += s.x;
+                orSh.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
+            }
+            space = 0;
+            app.ActiveLayer.CreateLineSegment(position.x, position.y, position.x + size.x, position.y).CreateSelection();
+            orSh.AddRange(app.ActiveSelectionRange);
+            for (int j = 0; j < numRow.Value; j++)
+            {
+                space += s.y;
+                orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
+            }
+            orSh.Group();
+            return orSh;
         }
 
         private void btnCrSemiLine_Click(object sender, RoutedEventArgs e)
@@ -223,30 +227,33 @@ namespace FileBe
             }
             try
             {
-                ShapeRange orSh = app.ActiveSelectionRange;
-                ShapeRange img = new ShapeRange();
-                ShapeRange unColor = new ShapeRange();
-                orSh.UngroupAll();
-                foreach(Shape sh in orSh)
-                {
-                    if (sh.Type == cdrShapeType.cdrBitmapShape)
-                        img.Add(sh);
-                    else
-                        if (sh.Fill.Type == cdrFillType.cdrNoFill && sh.Outline.Type == cdrOutlineType.cdrNoOutline)
-                            unColor.Add(sh);
-                }
-                //MessageBox.Show(img.Count.ToString());
-                img.Delete();
-                if(unColor.Count > 0)
-                {
-                    MessageBoxResult result = MessageBox.Show("Phát hiện viền bế ẩn, bạn có muốn tự động xóa?", "Cảnh báo!", MessageBoxButton.YesNo,MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.Yes)
-                        unColor.Delete();
-                }
+                DelImg();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+        }
+        private void DelImg()
+        {
+            ShapeRange orSh = app.ActiveSelectionRange;
+            ShapeRange img = new ShapeRange();
+            ShapeRange unColor = new ShapeRange();
+            orSh.UngroupAll();
+            foreach (Shape sh in orSh)
+            {
+                if (sh.Type == cdrShapeType.cdrBitmapShape)
+                    img.Add(sh);
+                else
+                    if (sh.Fill.Type == cdrFillType.cdrNoFill && sh.Outline.Type == cdrOutlineType.cdrNoOutline)
+                    unColor.Add(sh);
+            }
+            img.Delete();
+            if (unColor.Count > 0)
+            {
+                MessageBoxResult result = MessageBox.Show("Phát hiện viền bế ẩn, bạn có muốn tự động xóa?", "Cảnh báo!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                    unColor.Delete();
             }
         }
 
@@ -731,7 +738,7 @@ namespace FileBe
                             return true;
                         else
                         {
-                            orSh.Add(orSh.Shapes.First.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, false, 800, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
+                            orSh.Add(orSh.Shapes.First.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, true, 700, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
                             orSh.SizeWidth = size.x;
                             orSh.SizeHeight = size.y;
                             if(type == "circle")
@@ -753,7 +760,7 @@ namespace FileBe
                     {
                         orSh.Group().CreateSelection();
                         orSh = app.ActiveSelectionRange;
-                        orSh.Add(orSh.FirstShape.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, false, 800, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
+                        orSh.Add(orSh.FirstShape.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, true, 700, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
                         orSh.SizeWidth = size.x;
                         orSh.SizeHeight = size.y;
                         if (type == "circle")
@@ -794,6 +801,8 @@ namespace FileBe
                     mark2.CreateSelection();
                     createMark();
                     be.CreateSelection();
+                    DelImg();
+                    app.ActiveWindow.ActiveView.ToFitAllObjects();
                 }
                 catch (Exception ex)
                 {
@@ -816,7 +825,25 @@ namespace FileBe
             }
             if (initFile("custom"))
             {
-
+                try
+                {
+                    Shape orSh = CreateBe();
+                    Shape mark1 = app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
+                    mark1.CreateSelection();
+                    createMark();
+                    Shape be = orSh.Duplicate(orSh.SizeWidth + 15, 0);
+                    orSh.Outline.SetNoOutline();
+                    Shape mark2 = app.ActiveLayer.CreateRectangle(be.LeftX, be.TopY, be.RightX, be.BottomY);
+                    mark2.CreateSelection();
+                    createMark();
+                    be.CreateSelection();
+                    DelImg();
+                    app.ActiveWindow.ActiveView.ToFitAllObjects();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+                }
             }
             else
             {
@@ -827,16 +854,6 @@ namespace FileBe
 
         private void btnAutoLine_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                createMark();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
-            }
-            
-            return;
             if (checkActive())
             {
                 MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -844,7 +861,27 @@ namespace FileBe
             }
             if (initFile("line"))
             {
-                
+                try
+                {
+                    Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
+                    Size position = new Size(app.ActiveSelectionRange.PositionX, app.ActiveSelectionRange.PositionY);
+                    Size size = new Size(s.x * numCol.Value, s.y * numRow.Value);
+                    Shape orSh = CreateBe();
+                    Shape mark1 = app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
+                    mark1.CreateSelection();
+                    createMark();
+                    orSh.Outline.SetNoOutline();
+                    ShapeRange be = CrLine(s, position, size);
+                    be.Move(be.SizeWidth + 15,0);
+                    Shape mark2 = app.ActiveLayer.CreateRectangle(be.LeftX, be.TopY, be.RightX, be.BottomY);
+                    mark2.CreateSelection();
+                    createMark();
+                    app.ActiveWindow.ActiveView.ToFitAllObjects();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+                }
             }
             else
             {
@@ -866,6 +903,7 @@ namespace FileBe
             ss.AppendCurveSegment(0, 0);
             botRight.Curve.CopyAssign(c);
             botRight.Outline.Width = mWid;
+            botRight.Outline.Color.CMYKAssign(30, 30, 30, 100);
             Shape topRight = botRight.Duplicate(0, 0);
             topRight.Flip(cdrFlipAxes.cdrFlipVertical);
             topRight.AddToSelection();
