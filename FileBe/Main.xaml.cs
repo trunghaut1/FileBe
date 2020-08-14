@@ -14,7 +14,6 @@ namespace FileBe
         Corel.Interop.CorelDRAW.Application app = null;
         string err = "Chưa chọn đối tượng!";
         double _space = 1;
-        Size _size = new Size(0, 0);
         public Main()
         {
             InitializeComponent();
@@ -54,8 +53,6 @@ namespace FileBe
             lblTotal.Content = "0";
             numInsert.Value = 0;
             _space = 1;
-            _size.x = 0;
-            _size.y = 0;
         }
         private bool checkActive()
         {
@@ -67,7 +64,6 @@ namespace FileBe
         {
             if (checkActive()) return;
             app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
-            autoRound();
             Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
             try
             {
@@ -96,6 +92,25 @@ namespace FileBe
         {
             calSize();
         }
+        private Shape CreateBe()
+        {
+            ShapeRange orSh = app.ActiveSelectionRange;
+            Size s = new Size(orSh.SizeWidth, orSh.SizeHeight);
+            double space = 0;
+            for (int i = 1; i < numRow.Value; i++)
+            {
+                space += s.y + _space;
+                orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
+            }
+            orSh.CreateSelection();
+            space = 0;
+            for (int j = 1; j < numCol.Value; j++)
+            {
+                space += s.x + _space;
+                orSh.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
+            }
+            return orSh.Group();
+        }
 
         private void btnCreate_Click(object sender, RoutedEventArgs e)
         {
@@ -106,23 +121,7 @@ namespace FileBe
             }
             try
             {
-                autoRound();
-                Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
-                ShapeRange orSh = app.ActiveSelectionRange;
-                double space = 0;
-                for (int i = 1; i < numRow.Value; i++)
-                {
-                    space += s.y + _space;
-                    orSh.AddRange(app.ActiveSelectionRange.Duplicate(0, -space));
-                }
-                orSh.CreateSelection();
-                space = 0;
-                for (int j = 1; j < numCol.Value; j++)
-                {
-                    space += s.x + _space;
-                    orSh.AddRange(app.ActiveSelectionRange.Duplicate(space, 0));
-                }
-                orSh.Group();
+                Shape orSh = CreateBe();
                 app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY).CreateSelection();
             }
             catch (Exception ex)
@@ -140,7 +139,6 @@ namespace FileBe
             }
             try
             {
-                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = null;
                 Size position = new Size(app.ActiveSelectionRange.PositionX, app.ActiveSelectionRange.PositionY);
@@ -180,7 +178,6 @@ namespace FileBe
             }
             try
             {
-                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
                 Shape sh = app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
@@ -268,7 +265,6 @@ namespace FileBe
             try
             {
                 app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
-                autoRound();
                 ShapeRange orSh = app.ActiveSelectionRange;
                 double sRec = orSh.SizeHeight * orSh.SizeWidth;
                 double sEll = Math.Pow(orSh.SizeWidth / 2, 2) * Math.PI;
@@ -311,7 +307,6 @@ namespace FileBe
             try
             {
                 app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
-                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange orSh = app.ActiveSelectionRange;
                 if (orSh.Shapes[1].Type == cdrShapeType.cdrBitmapShape && orSh.Count == 1)
@@ -643,17 +638,6 @@ namespace FileBe
                 MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
             }
         }
-        private void autoRound()
-        {
-            Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
-            if(s.x != _size.x || s.y != _size.y)
-            {
-                _size.x = Math.Round(s.x, 1);
-                _size.y = Math.Round(s.y, 1);
-                app.ActiveSelection.SizeWidth = _size.x;
-                app.ActiveSelection.SizeHeight = _size.y;                
-            }
-        }
 
         private void btnCrLineColor_Click(object sender, RoutedEventArgs e)
         {
@@ -664,7 +648,6 @@ namespace FileBe
             }
             try
             {
-                autoRound();
                 Size s = new Size(app.ActiveSelection.SizeWidth, app.ActiveSelection.SizeHeight);
                 ShapeRange rowRange = app.ActiveSelectionRange;
                 ShapeRange colRev = app.ActiveSelectionRange;
@@ -720,20 +703,185 @@ namespace FileBe
             ChangeTheme(list[index]);
             writeTheme(list[index]);
         }
+        private bool initFile(string type)
+        {
+            app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+            ShapeRange orSh = app.ActiveSelectionRange;
+            Size size = new Size(orSh.SizeWidth, orSh.SizeHeight);
+            try
+            {
+                if (orSh.Count == 1)
+                {
+                    if (orSh.Shapes.First.Type == cdrShapeType.cdrBitmapShape)
+                    {
+                        if (type == "circle")
+                        {
+                            orSh.Add(app.ActiveLayer.CreateEllipse2(orSh.CenterX, orSh.CenterY, orSh.SizeWidth / 2, orSh.SizeHeight / 2));
+                            orSh.CreateSelection();
+                            return true;
+                        }
+                        if (type == "line")
+                            return true;
+                        else
+                            return false;
+                    }
+                    else if (orSh.Shapes.First.Type == cdrShapeType.cdrGroupShape)
+                    {
+                        if (type == "custom")
+                            return true;
+                        else
+                        {
+                            orSh.Add(orSh.Shapes.First.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, false, 800, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
+                            orSh.SizeWidth = size.x;
+                            orSh.SizeHeight = size.y;
+                            if(type == "circle")
+                            {
+                                orSh.Add(app.ActiveLayer.CreateEllipse2(orSh.CenterX, orSh.CenterY, orSh.SizeWidth / 2, orSh.SizeHeight / 2));
+                            }
+                            orSh.CreateSelection();
+                            return true;
+                        }
+                    }
+                    else
+                        return false;
+                }
+                else
+                {
+                    if (type == "custom")
+                        return true;
+                    else
+                    {
+                        orSh.Group().CreateSelection();
+                        orSh = app.ActiveSelectionRange;
+                        orSh.Add(orSh.FirstShape.ConvertToBitmapEx(cdrImageType.cdrCMYKColorImage, false, false, 800, cdrAntiAliasingType.cdrNormalAntiAliasing, true, false, 95));
+                        orSh.SizeWidth = size.x;
+                        orSh.SizeHeight = size.y;
+                        if (type == "circle")
+                        {
+                            orSh.Add(app.ActiveLayer.CreateEllipse2(orSh.CenterX, orSh.CenterY, orSh.SizeWidth / 2, orSh.SizeHeight / 2));
+                        }
+                        orSh.CreateSelection();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+                return false;
+            }
+            
+        }
 
         private void btnAutoCircle_Click(object sender, RoutedEventArgs e)
         {
-
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if(initFile("circle"))
+            {
+                try
+                {
+                    Shape orSh = CreateBe();
+                    Shape mark1 = app.ActiveLayer.CreateRectangle(orSh.LeftX, orSh.TopY, orSh.RightX, orSh.BottomY);
+                    mark1.CreateSelection();
+                    createMark();
+                    Shape be = orSh.Duplicate(orSh.SizeWidth + 15, 0);
+                    orSh.Outline.SetNoOutline();
+                    Shape mark2 = app.ActiveLayer.CreateRectangle(be.LeftX, be.TopY, be.RightX, be.BottomY);
+                    mark2.CreateSelection();
+                    createMark();
+                    be.CreateSelection();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Chưa thỏa điều kiện tạo file bế tròn!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
         }
 
         private void btnAutoDef_Click(object sender, RoutedEventArgs e)
         {
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (initFile("custom"))
+            {
 
+            }
+            else
+            {
+                MessageBox.Show("Chưa thỏa điều kiện tạo file bế tùy chỉnh!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
         }
 
         private void btnAutoLine_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                createMark();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.Source, "Lỗi");
+            }
+            
+            return;
+            if (checkActive())
+            {
+                MessageBox.Show(err, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (initFile("line"))
+            {
+                
+            }
+            else
+            {
+                MessageBox.Show("Chưa thỏa điều kiện tạo file bế thẳng!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+        }
+        private void createMark()
+        {
+            double mSize = 1.6;
+            double mWid = 0.06;
+            app.ActiveDocument.Unit = cdrUnit.cdrCentimeter;
+            ShapeRange orSh = app.ActiveSelectionRange;
+            Shape botRight = app.ActiveLayer.CreateRectangle(0, 0, mSize, mSize);
+            botRight.ConvertToCurves();
+            Curve c = app.ActiveDocument.CreateCurve();
+            SubPath ss = c.CreateSubPath(mSize, mSize);
+            ss.AppendCurveSegment(0, mSize);
+            ss.AppendCurveSegment(0, 0);
+            botRight.Curve.CopyAssign(c);
+            botRight.Outline.Width = mWid;
+            Shape topRight = botRight.Duplicate(0, 0);
+            topRight.Flip(cdrFlipAxes.cdrFlipVertical);
+            topRight.AddToSelection();
+            Shape topLeft = botRight.Duplicate(0, 0);
+            topLeft.Flip(cdrFlipAxes.cdrFlipBoth);
+            topLeft.AddToSelection();
+            Shape botLeft = botRight.Duplicate(0, 0);
+            botLeft.Flip(cdrFlipAxes.cdrFlipHorizontal);
+            botLeft.AddToSelection();
+            botRight.Move(orSh.PositionX + orSh.SizeWidth, orSh.PositionY - orSh.SizeHeight - mSize);
+            topRight.Move(orSh.PositionX + orSh.SizeWidth, orSh.PositionY);
+            topLeft.Move(orSh.PositionX - mSize, orSh.PositionY);
+            botLeft.Move(orSh.PositionX - mSize, orSh.PositionY - orSh.SizeHeight - mSize);
+            Shape mark = app.ActiveSelectionRange.Combine();
+            mark.Name = "FineCut_TomboGroup";
+            orSh.Delete();
         }
     }
 }
